@@ -79,7 +79,12 @@
 
   <button id="startButton">Start Battle</button>
 
-  <div id="status"></div>
+  <h2>TeamA</h2>
+  <div id="statusA">
+  </div>
+  <h2>TeamB</h2>
+  <div id="statusB">
+  </div>
   <div id="log"></div>
 
   <script>
@@ -111,10 +116,12 @@
         attack: event.target.attack.value,
         defense: event.target.defense.value,
         hp: event.target.hp.value,
+        maxHP: event.target.maxHP.value,
         speed: event.target.speed.value,
         accuracy: event.target.accuracy.value,
         evasion: event.target.evasion.value,
-        team: event.target.team.value
+        team: event.target.team.value,
+        role: event.target.role.value
       };
       characters.push(character);
       event.target.reset();
@@ -195,13 +202,16 @@
             let allies = characters.filter(c => c.team === character.team && c.hp < c.maxHP);
             if (allies.length > 0 && Math.random() < 0.5) {
               let ally = allies[Math.floor(Math.random() * allies.length)];
-              let heal = character.attack;
-              ally.hp = Math.min(ally.hp + heal, ally.maxHP);
-              addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
-              turn++;
-              updateStatus();
-              setTimeout(nextTurn, 1000);
-              return;
+              // HPが0の仲間に対して回復しないようにする
+              if (ally.hp > 0) {
+                let heal = character.attack;
+                ally.hp = Math.min(ally.hp + heal, ally.maxHP);
+                addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
+                turn++;
+                updateStatus();
+                setTimeout(nextTurn, 1000);
+                return;
+              }
             }
           }
 
