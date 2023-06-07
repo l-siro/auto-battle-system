@@ -122,20 +122,43 @@
     });
 
     document.getElementById('startButton').addEventListener('click', function () {
-      characters.sort((a, b) => b.speed - a.speed);
       updateStatus();
       startBattle();
     });
 
-    function updateStatus() {
-      let status = document.getElementById("status");
-      status.innerHTML = '';
-      for (let character of characters) {
-        let div = document.createElement("div");
-        div.textContent = `チーム${character.team}の${character.name}：残りHP ${Math.max(character.hp, 0)}`;
-        status.appendChild(div);
+
+    function getActionOrder() {
+      let actionOrder = [];
+      // 最大速度を取得
+      let maxSpeed = Math.max(...characters.map(c => c.speed));
+      // 速度0から最大速度までループ
+      for (let speed = maxSpeed; speed >= 0; speed--) {
+        // 速度が同じキャラクターを取得
+        let sameSpeedCharacters = characters.filter(c => c.speed === speed);
+        // そのキャラクターをランダムに並べ替えて行動順序のリストに追加
+        while (sameSpeedCharacters.length > 0) {
+          let randomIndex = Math.floor(Math.random() * sameSpeedCharacters.length);
+          actionOrder.push(sameSpeedCharacters[randomIndex]);
+          sameSpeedCharacters.splice(randomIndex, 1);
+        }
       }
+      return actionOrder;
     }
+
+    function updateStatus() {
+      statusA.innerHTML = '';
+      statusB.innerHTML = '';
+      characters.forEach((character) => {
+        let statusElement = document.createElement('p');
+        statusElement.textContent = `${character.name}（${character.role ? character.role : "役職なし"}）: ${character.hp}/${character.maxHP}`;
+        if (character.team === 'A') {
+          statusA.appendChild(statusElement);
+        } else {
+          statusB.appendChild(statusElement);
+        }
+      });
+    }
+
 
     function updateCharacterList() {
       let characterList = document.getElementById("characterList");
@@ -150,11 +173,22 @@
 
     function startBattle() {
       let turn = 0;
+
+      // 行動順序のリストを生成
+      let actionOrder = getActionOrder();
+
       function nextTurn() {
         if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0 &&
           characters.filter(c => c.team === 'B' && c.hp > 0).length > 0) {
-          let activeCharacters = characters.filter(c => c.hp > 0);
-          let character = activeCharacters[turn % activeCharacters.length];
+          // 行動順序のリストに従ってキャラクターが行動
+          let character = actionOrder[turn % actionOrder.length];
+
+          if (character.hp <= 0) {
+            // HPが0以下のキャラクターは行動しない
+            turn++;
+            setTimeout(nextTurn, 1000);
+            return;
+          }
 
           // ヒーラーの回復行動
           if (character.role === 'healer') {
@@ -215,9 +249,9 @@
         }
       }
 
-
       nextTurn();
     }
+
 
     function addLog(text, className) {
       let log = document.getElementById("log");

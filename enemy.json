@@ -1,0 +1,22 @@
+[
+  {
+    "name": "ゴブリン",
+    "attack": 10,
+    "defense": 5,
+    "hp": 50,
+    "speed": 5,
+    "accuracy": 0.9,
+    "evasion": 0.1,
+    "team": "B"
+  },
+  {
+    "name": "オーガ",
+    "attack": 15,
+    "defense": 10,
+    "hp": 100,
+    "speed": 10,
+    "accuracy": 0.8,
+    "evasion": 0.2,
+    "team": "B"
+  }
+]
