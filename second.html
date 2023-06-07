@@ -13,7 +13,7 @@
       border: 1px solid black;
       padding: 10px;
       margin-bottom: 10px;
-      max-height: 300px;
+      height: 300px;
       overflow-y: scroll;
     }
 
@@ -220,22 +220,22 @@
             let target = targets[Math.floor(Math.random() * targets.length)];
 
             // タンクの防御行動
-            if (target.role === 'tank' && Math.random() < 0.5) {
+            if (target.role === 'tank') {
               let allies = characters.filter(c => c.team === target.team && c.hp > 0 && c !== target);
               if (allies.length > 0) {
                 let ally = allies[Math.floor(Math.random() * allies.length)];
-                target = ally;
-                addLog(`${target.name}がダメージを引き受けた！`, "tank_" + target.team);
+                addLog(`${target.name}が${ally.name}を守る位置を取った。`, "tank_" + target.team);
               }
             }
+
 
             if (Math.random() < character.accuracy - target.evasion) {
               let damage = Math.max(0, Math.floor(character.attack - target.defense + character.attack * (Math.random() * 0.2 - 0.1)));
               if (Math.random() < character.accuracy / 10) {
                 damage *= 2;
-                addLog(`${character.name} → ${target.name}  ${Math.floor(damage)}ダメージ（クリティカル）！`, "attack_" + character.team);
+                addLog(`${character.name} ▶ ${target.name}  ${Math.floor(damage)}ダメージ（クリティカル）！`, "attack_" + character.team);
               } else {
-                addLog(`${character.name} → ${target.name}  ${Math.floor(damage)}ダメージ！`, "attack_" + character.team);
+                addLog(`${character.name} ▶ ${target.name}  ${Math.floor(damage)}ダメージ！`, "attack_" + character.team);
               }
               target.hp -= damage;
               if (target.hp <= 0) {
