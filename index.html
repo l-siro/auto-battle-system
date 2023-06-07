@@ -9,7 +9,7 @@
       max-width: 1000px;
       margin: 0 auto;
     }
-    #battle-log {
+    #log {
       padding: 10px;
       margin: 10px;
       border-radius: 5px;
@@ -40,92 +40,90 @@
 
 <body>
   <div class="wrap">
-    <div id="status-teamA">
-      <h2>チームA</h2>
-      <!-- チームAのキャラクターのステータスを表示するための要素 -->
-    </div>
-
-    <div id="status-teamB">
-      <h2>チームB</h2>
-      <!-- チームBのキャラクターのステータスを表示するための要素 -->
-    </div>
-
-    <div id="battle-log">
-      <!-- 戦闘ログ -->
-    </div>
+    <div id="status"></div>
+    <hr>
+    <div id="log"></div>
   </div>
 
   <script>
-  // キャラクターとステータスを定義
-let teamA = [
-    { name: "キャラ1", attack: 10, defense: 5, hp: 100, speed: 10, team: 'A', accuracy: 0.8 },
-    { name: "キャラ2", attack: 15, defense: 3, hp: 100, speed: 20, team: 'A', accuracy: 0.7 }
-];
+  document.addEventListener("DOMContentLoaded", function () {
+    let characters = [
+      { name: "キャラ1", attack: 10, defense: 5, hp: 100, speed: 10, team: 'A', accuracy: 0.8 },
+      { name: "キャラ2", attack: 15, defense: 3, hp: 100, speed: 20, team: 'A', accuracy: 0.7 },
+      { name: "キャラ3", attack: 12, defense: 4, hp: 100, speed: 15, team: 'B', accuracy: 0.9 },
+      { name: "キャラ4", attack: 9, defense: 6, hp: 100, speed: 25, team: 'B', accuracy: 0.75 }
+    ];
 
-let teamB = [
-    { name: "キャラ3", attack: 12, defense: 4, hp: 100, speed: 15, team: 'B', accuracy: 0.9 },
-    { name: "キャラ4", attack: 9, defense: 6, hp: 100, speed: 25, team: 'B', accuracy: 0.75 }
-];
+    characters.sort((a, b) => b.speed - a.speed);
 
-  
-  let characters = teamA.concat(teamB).sort((a, b) => b.speed - a.speed);
-
-  // 各キャラクターのステータスを更新するための関数
-  function updateStatus() {
-    let statusTeamA = document.getElementById('status-teamA');
-    let statusTeamB = document.getElementById('status-teamB');
-
-    statusTeamA.innerHTML = '<h2>チームA</h2>';
-    statusTeamB.innerHTML = '<h2>チームB</h2>';
-
-    for (let character of characters) {
-      let status = `${character.name}: HP=${Math.max(character.hp, 0)}`;
-
-      if (character.team === 'A') {
-        statusTeamA.innerHTML += '<p>' + status + '</p>';
-      } else {
-        statusTeamB.innerHTML += '<p>' + status + '</p>';
-      }
-    }
-  }
-
-  // ログにメッセージを追加
-  function addLog(message, className) {
-    let battleLog = document.getElementById('battle-log');
-    battleLog.innerHTML += `<p class="${className}">${message}</p>`;
-    battleLog.scrollTop = battleLog.scrollHeight;
-  }
-
-  // 戦闘を自動で進行させる
-  function battle(i) {
-    if (!characters.some(character => character.hp > 0 && character.team === 'A') || !characters.some(character => character.hp > 0 && character.team === 'B')) {
-      if (characters.some(character => character.hp > 0 && character.team === 'A')) {
-        addLog("チームAの勝利！", "result");
-      } else {
-        addLog("チームBの勝利！", "result");
-      }
-      return;
+    function addLog(text, className) {
+      let log = document.getElementById("log");
+      let div = document.createElement("div");
+      div.textContent = text;
+      div.className = className;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
     }
 
-    let character = characters[i];
-    if (character.hp > 0) {
-      let targetTeam = character.team === 'A' ? 'B' : 'A';
-      let target = characters.find(c => c.hp > 0 && c.team === targetTeam);
-      if (target) {
+    function updateStatus() {
+      let status = document.getElementById("status");
+      status.innerHTML = '';
+      for (let character of characters) {
+        let div = document.createElement("div");
+        div.textContent = `チーム${character.team}の${character.name}：残りHP ${Math.max(character.hp, 0)}`;
+        status.appendChild(div);
+      }
+    }
+
+    function attack(character, target) {
+      if (Math.random() < character.accuracy) {
         let damage = Math.max(0, character.attack - target.defense);
         target.hp -= damage;
-        // キャラクターが攻撃したときのログ
-        addLog(`チーム${character.team}の${character.name} が チーム${targetTeam}の${target.name} に ${damage} ダメージを与えた！ チーム${targetTeam}の${target.name} の残りHPは ${Math.max(target.hp, 0)} です。`, "attack_" + character.team);
-        updateStatus();
+        addLog(`チーム${character.team}の${character.name}がチーム${target.team}の${target.name}に${damage}ダメージ！${target.name}の残りHPは${Math.max(target.hp, 0)}。`, "attack_" + character.team);
+      } else {
+        addLog(`チーム${character.team}の${character.name}の攻撃は外れた！`, "miss_" + character.team);
       }
     }
 
-    // 500ms（0.5秒）後に次のキャラクターの行動を実行
-    setTimeout(() => battle((i + 1) % characters.length), 500);
-  }
+    function checkAlive(team) {
+      return characters.filter(character => character.team === team && character.hp > 0).length > 0;
+    }
 
-  // 戦闘開始
-  battle(0);
+    // バトルの開始
+    function startBattle() {
+      let turn = 0;
+
+      function nextTurn() {
+        if (checkAlive('A') && checkAlive('B')) {
+          let character = characters[turn % characters.length];
+          let targets = characters.filter(c => c.team !== character.team && c.hp > 0);
+          if (targets.length > 0) {
+            let target = targets[Math.floor(Math.random() * targets.length)];
+            attack(character, target);
+          }
+          turn++;
+          updateStatus();
+
+          // 次のターンまで一定時間（たとえば500ms）待つ
+          setTimeout(nextTurn, 500);
+        } else {
+          // 勝者の判定
+          if (checkAlive('A')) {
+            addLog('チームAの勝利！', 'result');
+          } else {
+            addLog('チームBの勝利！', 'result');
+          }
+        }
+      }
+
+      nextTurn();
+    }
+
+    // ステータスの初期表示とバトルの開始
+    updateStatus();
+    startBattle();
+
+  });
 
   </script>
 </body>
