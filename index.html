@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/ress/dist/ress.min.css" />
+  <style>
+    /* CSSスタイルをここに追加 */
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    #battle-log {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      background: rgb(255, 255, 255);
+      max-height: 500px;
+      overflow-y: scroll;
+    }
+    .attack_A,
+    .attack_B {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+    }
+    .attack_A {
+      background: rgb(219, 219, 255);
+    }
+    .attack_B {
+      background: rgb(254, 213, 213);
+    }
+    .result {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 5px;
+      background: rgb(255, 255, 255);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div id="status-teamA">
+      <h2>チームA</h2>
+      <!-- チームAのキャラクターのステータスを表示するための要素 -->
+    </div>
+
+    <div id="status-teamB">
+      <h2>チームB</h2>
+      <!-- チームBのキャラクターのステータスを表示するための要素 -->
+    </div>
+
+    <div id="battle-log">
+      <!-- 戦闘ログ -->
+    </div>
+  </div>
+
+  <script>
+  // キャラクターとステータスを定義
+let teamA = [
+    { name: "キャラ1", attack: 10, defense: 5, hp: 100, speed: 10, team: 'A', accuracy: 0.8 },
+    { name: "キャラ2", attack: 15, defense: 3, hp: 100, speed: 20, team: 'A', accuracy: 0.7 }
+];
+
+let teamB = [
+    { name: "キャラ3", attack: 12, defense: 4, hp: 100, speed: 15, team: 'B', accuracy: 0.9 },
+    { name: "キャラ4", attack: 9, defense: 6, hp: 100, speed: 25, team: 'B', accuracy: 0.75 }
+];
+
+  
+  let characters = teamA.concat(teamB).sort((a, b) => b.speed - a.speed);
+
+  // 各キャラクターのステータスを更新するための関数
+  function updateStatus() {
+    let statusTeamA = document.getElementById('status-teamA');
+    let statusTeamB = document.getElementById('status-teamB');
+
+    statusTeamA.innerHTML = '<h2>チームA</h2>';
+    statusTeamB.innerHTML = '<h2>チームB</h2>';
+
+    for (let character of characters) {
+      let status = `${character.name}: HP=${Math.max(character.hp, 0)}`;
+
+      if (character.team === 'A') {
+        statusTeamA.innerHTML += '<p>' + status + '</p>';
+      } else {
+        statusTeamB.innerHTML += '<p>' + status + '</p>';
+      }
+    }
+  }
+
+  // ログにメッセージを追加
+  function addLog(message, className) {
+    let battleLog = document.getElementById('battle-log');
+    battleLog.innerHTML += `<p class="${className}">${message}</p>`;
+    battleLog.scrollTop = battleLog.scrollHeight;
+  }
+
+  // 戦闘を自動で進行させる
+  function battle(i) {
+    if (!characters.some(character => character.hp > 0 && character.team === 'A') || !characters.some(character => character.hp > 0 && character.team === 'B')) {
+      if (characters.some(character => character.hp > 0 && character.team === 'A')) {
+        addLog("チームAの勝利！", "result");
+      } else {
+        addLog("チームBの勝利！", "result");
+      }
+      return;
+    }
+
+    let character = characters[i];
+    if (character.hp > 0) {
+      let targetTeam = character.team === 'A' ? 'B' : 'A';
+      let target = characters.find(c => c.hp > 0 && c.team === targetTeam);
+      if (target) {
+        let damage = Math.max(0, character.attack - target.defense);
+        target.hp -= damage;
+        // キャラクターが攻撃したときのログ
+        addLog(`チーム${character.team}の${character.name} が チーム${targetTeam}の${target.name} に ${damage} ダメージを与えた！ チーム${targetTeam}の${target.name} の残りHPは ${Math.max(target.hp, 0)} です。`, "attack_" + character.team);
+        updateStatus();
+      }
+    }
+
+    // 500ms（0.5秒）後に次のキャラクターの行動を実行
+    setTimeout(() => battle((i + 1) % characters.length), 500);
+  }
+
+  // 戦闘開始
+  battle(0);
+
+  </script>
+</body>
+</html>
