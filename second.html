@@ -16,12 +16,11 @@
       font-family: 'Noto Sans JP', sans-serif;
     }
 
-    #status,
     #log {
       border: 1px solid black;
       padding: 10px;
       margin-bottom: 10px;
-      height: 300px;
+      height: 120px;
       overflow-y: scroll;
     }
 
@@ -73,7 +72,7 @@
       font-size: 4rem;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-end;
       height: 100%;
       width: 100%;
       text-align: center;
@@ -90,7 +89,7 @@
       font-size: 4rem;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-end;
       height: 100%;
       width: 100%;
       text-align: center;
@@ -107,7 +106,7 @@
       font-size: 2rem;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-end;
       height: 100%;
       width: 100%;
       text-align: center;
@@ -116,6 +115,7 @@
       border-radius: 4px;
       padding: 0 5px 0 0;
       font-family: 'Noto Sans JP', sans-serif;
+      line-height: 1.4;
     }
     .character-card.defeat {
       opacity: 0.5;
@@ -152,6 +152,23 @@
     }
     .character-hp-indicator::-webkit-progress-value {
       background-color: #8dff8d;
+    }
+
+    #startButton {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 5px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      font-size: 16px;
+      margin: 15px auto;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+    #startButton:hover {
+      cursor: pointer;
+      opacity: 0.6;
     }
 
     @keyframes shake {
@@ -214,6 +231,8 @@
   <div id="log"></div>
 
   <script>
+    const battleSpeed = 500;
+    const halfSpeed = battleSpeed / 2;
     let characters = [];
     let characterId = 0;
 
@@ -320,7 +339,7 @@
             characterCard.classList.add('shake');
             setTimeout(() => {
               characterCard.classList.remove('shake');
-            }, 500);
+            }, halfSpeed);
           }
         }, 0);
       }
@@ -340,7 +359,7 @@
             setTimeout(() => {
               targetCard.removeChild(damageText);
               targetCard.classList.remove('hit');
-            }, 1000);
+            }, battleSpeed);
           }
         }, 0);
       }
@@ -358,7 +377,7 @@
             setTimeout(() => {
               targetCard.classList.remove('miss');
               targetCard.removeChild(missText);
-            }, 500);
+            }, halfSpeed);
           }
         }, 0);
       }
@@ -387,9 +406,6 @@
           if (target.hp <= 0) {
             target.hp = 0;
             addLog(`${target.name} が倒れた！`, "defeat_" + target.team);
-            // 倒れたキャラクターの行動順序をリストから削除
-            actionOrder = actionOrder.filter(c => c.id !== target.id);
-
             // 倒れたキャラクターのDOM要素に'defeat'クラスを追加
             let targetCard = document.getElementById(`character-${target.id}`);
             if (targetCard) {
@@ -402,7 +418,7 @@
           missEffect();
           addLog(`${character.name} の攻撃が ${target.name} にミス！`, "miss_" + character.team);
         }
-      }, 300);
+      }, halfSpeed);
 
       
       
@@ -425,7 +441,7 @@
           if (character.hp <= 0) {
             // HPが0以下のキャラクターは行動しない
             turn++;
-            setTimeout(nextTurn, 1000);
+            setTimeout(nextTurn, 0);
             return;
           }
 
@@ -442,21 +458,25 @@
               turn++;
               // Update HP indicator
               updateHpIndicator(ally);
-              setTimeout(nextTurn, 1000);
+              setTimeout(nextTurn, battleSpeed);
               return;
             }
           }
 
           let targets = characters.filter(c => c.team !== character.team && c.hp > 0);
           if (targets.length > 0) {
+            // ターゲットがいる場合ランダムで選択（7割の確率でタンクを選択）
             let originalTarget = targets[Math.floor(Math.random() * targets.length)];
+            if (Math.random() < 0.7) {
+              originalTarget = targets.find(c => c.role === 'tank');
+            }
             let target = originalTarget;
             attack(character, target, originalTarget);
           }
           turn++;
           // 行動が終わったらステータスを更新
           updateCharacterStatus();
-          setTimeout(nextTurn, 1000);
+          setTimeout(nextTurn, battleSpeed);
         } else {
           // 勝敗が決まった場合
           if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0) {
@@ -495,7 +515,7 @@
           setTimeout(() => {
             healerCard.classList.remove('heal');
             targetCard.classList.remove('healed');
-          }, 500);
+          }, halfSpeed);
         }
       }, 0);
     }
@@ -513,7 +533,7 @@
 
           setTimeout(() => {
             targetCard.removeChild(healText);
-          }, 1000);
+          }, battleSpeed);
         }
       }, 0);
     }

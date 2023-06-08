@@ -9,7 +9,7 @@
     "defense": 5,
     "accuracy": 0.8,
     "evasion": 0.1,
-    "speed": 12
+    "speed": 10
   },
   {
     "name": "リオ",
@@ -33,7 +33,7 @@
     "defense": 10,
     "accuracy": 0.9,
     "evasion": 0.1,
-    "speed": 10
+    "speed": 12
   },
   {
     "name": "ゴブリン・ヒーラー",
