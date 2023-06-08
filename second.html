@@ -44,6 +44,58 @@
       padding: 5px;
       border: 1px solid black;
     }
+
+    .character-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid black;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    .character-img {
+      width: 100px;
+      height: 100px;
+    }
+
+    .character-name {
+      font-size: 20px;
+      margin: 10px 0;
+    }
+
+    .character-stats {
+      margin: 10px 0;
+    }
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+
+    .character-card.shake {
+      animation: shake 0.5s;
+      animation-iteration-count: 1;
+    }
+
+    @keyframes flash {
+      from {background-color: red;}
+      to {background-color: inherit;}
+    }
+
+    .character-card.flash {
+      animation: flash 1s;
+      animation-iteration-count: 1;
+    }
+
   </style>
 </head>
 
@@ -80,58 +132,62 @@
   <button id="startButton">Start Battle</button>
 
   <h2>TeamA</h2>
-  <div id="statusA">
-  </div>
+  <div id="statusA"></div>
   <h2>TeamB</h2>
-  <div id="statusB">
-  </div>
+  <div id="statusB"></div>
   <div id="log"></div>
 
   <script>
-    let characters = [];
+  let characters = [];
 
-    document.getElementById('loadFile').addEventListener('change', function (e) {
-      let file = e.target.files[0];
-      if (!file) {
-        return;
+  const fileInput = document.getElementById('loadFile');
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      try {
+        characters = JSON.parse(event.target.result);  // characters array is reset here
+        createCharacterCards();
+        document.getElementById("startButton").disabled = false;
+      } catch (e) {
+        console.error('The uploaded file is not valid JSON:', e);
       }
-      let reader = new FileReader();
-      reader.onload = function (e) {
-        let contents = e.target.result;
-        let data = JSON.parse(contents);
-        for (let character of data) {
-          characters.push(character);
-        }
-        updateCharacterList();
-        updateStatus();
-      };
-      reader.readAsText(file);
-    });
+    };
+
+    reader.readAsText(file);
+  });
+
+document.getElementById('addCharacterForm').addEventListener('submit', function (event) {
+  event.preventDefault();
+  let character = {
+    name: event.target.name.value,
+    attack: parseInt(event.target.attack.value, 10),
+    defense: parseInt(event.target.defense.value, 10),
+    hp: parseInt(event.target.hp.value, 10),
+    maxHP: parseInt(event.target.maxHP.value, 10),
+    speed: parseInt(event.target.speed.value, 10),
+    accuracy: parseFloat(event.target.accuracy.value),
+    evasion: parseFloat(event.target.evasion.value),
+    team: event.target.team.value,
+    role: event.target.role.value
+  };
+
+  // Add new character only if it doesn't exist already
+  if (!characters.some(existingCharacter => existingCharacter.name === character.name)) {
+    characters.push(character);
+  }
+  
+  event.target.reset();
+  updateCharacterList();
+});
+
+document.getElementById('startButton').addEventListener('click', function () {
+  updateStatus();
+  startBattle();
+});
 
 
-    document.getElementById('addCharacterForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      let character = {
-        name: event.target.name.value,
-        attack: event.target.attack.value,
-        defense: event.target.defense.value,
-        hp: event.target.hp.value,
-        maxHP: event.target.maxHP.value,
-        speed: event.target.speed.value,
-        accuracy: event.target.accuracy.value,
-        evasion: event.target.evasion.value,
-        team: event.target.team.value,
-        role: event.target.role.value
-      };
-      characters.push(character);
-      event.target.reset();
-      updateCharacterList();
-    });
-
-    document.getElementById('startButton').addEventListener('click', function () {
-      updateStatus();
-      startBattle();
-    });
 
 
     function getActionOrder() {
@@ -166,65 +222,100 @@
       });
     }
 
-
-    function updateCharacterList() {
-      let characterList = document.getElementById("characterList");
-      characterList.innerHTML = '';
-      for (let character of characters) {
-        let div = document.createElement("div");
-        div.textContent = `チーム${character.team}の${character.name}： 攻撃力 ${character.attack}, 防御力 ${character.defense}, HP ${character.hp}, 速度 ${character.speed}, 命中率 ${character.accuracy}, 回避率 ${character.evasion}`;
-        div.className = "character";
-        characterList.appendChild(div);
-      }
+  document.getElementById('loadFile').addEventListener('change', function (e) {
+    let file = e.target.files[0];
+    if (!file) {
+      return;
     }
+    let reader = new FileReader();
+    reader.onload = function (e) {
+      let contents = e.target.result;
+      let data = JSON.parse(contents);
+      for (let character of data) {
+        characters.push(character);
+      }
+      updateCharacterList();
+    };
+    reader.readAsText(file);
+  });
+  function updateCharacterList() {
+    let characterList = document.getElementById("characterList");
+    characterList.innerHTML = '';
+    for (let character of characters) {
+      let card = document.createElement("div");
+      card.id = `character-${character.id}`;
+      card.className = "character-card";
 
-    function startBattle() {
-      let turn = 0;
+      let img = document.createElement("img");
+      img.src = character.image ? character.image : `img/${character.role}.svg`;
+      img.className = `character-img`;
+      card.appendChild(img);
 
-      // 行動順序のリストを生成
-      let actionOrder = getActionOrder();
+      let name = document.createElement("p");
+      name.textContent = character.name;
+      name.className = `character-name`;
+      card.appendChild(name);
 
-      function nextTurn() {
-        if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0 &&
-          characters.filter(c => c.team === 'B' && c.hp > 0).length > 0) {
-          // 行動順序のリストに従ってキャラクターが行動
-          let character = actionOrder[turn % actionOrder.length];
+      let hp = document.createElement("p");
+      hp.textContent = `HP: ${character.hp}/${character.maxHP}`;
+      card.appendChild(hp);
 
-          if (character.hp <= 0) {
-            // HPが0以下のキャラクターは行動しない
+      let role = document.createElement("p");
+      role.textContent = `Role: ${character.role}`;
+      card.appendChild(role);
+
+      characterList.appendChild(card);
+    }
+  }
+
+
+
+  function startBattle() {
+    let turn = 0;
+
+    // 行動順序のリストを生成
+    let actionOrder = getActionOrder();
+
+    function nextTurn() {
+      if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0 &&
+        characters.filter(c => c.team === 'B' && c.hp > 0).length > 0) {
+
+        // 行動順序のリストに従ってキャラクターが行動
+        let character = actionOrder[turn % actionOrder.length];
+
+        if (character.hp <= 0) {
+          // HPが0以下のキャラクターは行動しない
+          turn++;
+          setTimeout(nextTurn, 1000);
+          return;
+        }
+
+        // ヒーラーの回復行動
+        if (character.role === 'healer') {
+          let allies = characters.filter(c => c.team === character.team && c.hp > 0 && c.hp < c.maxHP); // 死亡キャラクターを除外
+          if (allies.length > 0 && Math.random() < 0.5) {
+            let ally = allies[Math.floor(Math.random() * allies.length)];
+            let heal = character.attack;
+            ally.hp = Math.min(ally.hp + heal, ally.maxHP);
+            addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
             turn++;
+            // updateStatus(); 行動毎に更新しない
             setTimeout(nextTurn, 1000);
             return;
           }
-
-          // ヒーラーの回復行動
-          if (character.role === 'healer') {
-            let allies = characters.filter(c => c.team === character.team && c.hp < c.maxHP);
-            if (allies.length > 0 && Math.random() < 0.5) {
-              let ally = allies[Math.floor(Math.random() * allies.length)];
-              // HPが0の仲間に対して回復しないようにする
-              if (ally.hp > 0) {
-                let heal = character.attack;
-                ally.hp = Math.min(ally.hp + heal, ally.maxHP);
-                addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
-                turn++;
-                updateStatus();
-                setTimeout(nextTurn, 1000);
-                return;
-              }
-            }
-          }
+        }
 
           let targets = characters.filter(c => c.team !== character.team && c.hp > 0);
           if (targets.length > 0) {
-            let target = targets[Math.floor(Math.random() * targets.length)];
+            let originalTarget = targets[Math.floor(Math.random() * targets.length)];
+            let target = originalTarget;
 
-            // タンクの防御行動
-            if (target.role === 'tank') {
-              let allies = characters.filter(c => c.team === target.team && c.hp > 0 && c !== target);
-              if (allies.length > 0) {
-                let ally = allies[Math.floor(Math.random() * allies.length)];
-                addLog(`${target.name}が${ally.name}を守る位置を取った。`, "tank_" + target.team);
+            // タンクの防御行動をチェック
+            if (target.role !== 'tank') {
+              let tank = characters.find(c => c.team !== character.team && c.role === 'tank' && c.hp > 0);
+              if (tank && Math.random() < 0.5) {
+                target = tank;
+                addLog(`${tank.name}が${originalTarget.name}を守った！`, "tank_" + tank.team);
               }
             }
 
@@ -247,15 +338,18 @@
             }
           }
           turn++;
+          // 行動が終わったらステータスを更新
           updateStatus();
           setTimeout(nextTurn, 1000);
         } else {
+          // 勝敗が決まった場合
           if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0) {
             addLog("チームAが勝利した！", "result");
           } else {
             addLog("チームBが勝利した！", "result");
           }
           battleInProgress = false;
+          updateStatus(); // 戦闘が終わったらステータスを更新
         }
       }
 
