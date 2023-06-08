@@ -5,14 +5,15 @@
   <title>Battle Simulator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <style>
     :root {
       font-size: 10px;
     }
-      body {
-      font-family: Arial, sans-serif;
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
     }
 
     #status,
@@ -45,16 +46,26 @@
     #characterStatus {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
+      background: #eee;
+      padding: 20px;
+      gap: 10px;
     }
+
     .character-card {
       display: flex;
       flex-direction: column;
       align-items: center;
-      border: 1px solid black;
-      padding: 10px;
-      margin: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      background: #fff;
+      padding: 20px 15px;
+      max-width: 25%;
       position: relative;
+      width: 120px;
+      transition: .5s;
     }
+
     .character-card .damage {
       position: absolute;
       top: 0;
@@ -67,40 +78,99 @@
       width: 100%;
       text-align: center;
       color: red;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 4px;
+      padding: 0 5px 0 0;
+      font-family: 'Roboto', sans-serif;
+    }
+    .character-card .heal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 4rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      color: green;
       background: rgba(255, 255, 255, 0.5);
       border-radius: 4px;
       padding: 0 5px 0 0;
       font-family: 'Roboto', sans-serif;
     }
+    .character-card .miss {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      color: gray;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      padding: 0 5px 0 0;
+      font-family: 'Noto Sans JP', sans-serif;
+    }
     .character-card.defeat {
       opacity: 0.5;
       background: rgba(0, 0, 0, 0.5);
     }
+
     .character-img {
-      width: 100px;
-      height: 100px;
+      width: 50px;
+      height: 50px;
     }
 
     .character-name {
-      font-size: 20px;
+      font-size: 1.8rem;
       margin: 10px 0;
     }
 
     .character-stats {
       margin: 10px 0;
     }
+
+    .character-hp-indicator {
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .character-hp-indicator::-webkit-progress-bar {
+      background-color: #ccc;
+    }
+    .character-hp-indicator::-webkit-progress-value {
+      background-color: #8dff8d;
+    }
+
     @keyframes shake {
-      0% { transform: translate(1px, 1px) rotate(0deg); }
-      10% { transform: translate(-1px, -2px) rotate(-1deg); }
-      20% { transform: translate(-3px, 0px) rotate(1deg); }
-      30% { transform: translate(3px, 2px) rotate(0deg); }
-      40% { transform: translate(1px, -1px) rotate(1deg); }
-      50% { transform: translate(-1px, 2px) rotate(-1deg); }
-      60% { transform: translate(-3px, 1px) rotate(0deg); }
-      70% { transform: translate(3px, 1px) rotate(-1deg); }
-      80% { transform: translate(-1px, -1px) rotate(1deg); }
-      90% { transform: translate(1px, 2px) rotate(0deg); }
-      100% { transform: translate(1px, -2px) rotate(-1deg); }
+      0% {transform: translate(1px, 1px) rotate(0deg);}
+      10% {transform: translate(-1px, -2px) rotate(-1deg);}
+      20% {transform: translate(-3px, 0px) rotate(1deg);}
+      30% {transform: translate(3px, 2px) rotate(0deg);}
+      40% {transform: translate(1px, -1px) rotate(1deg);}
+      50% {transform: translate(-1px, 2px) rotate(-1deg);}
+      60% {transform: translate(-3px, 1px) rotate(0deg);}
+      70% {transform: translate(3px, 1px) rotate(-1deg);}
+      80% {transform: translate(-1px, -1px) rotate(1deg);}
+      90% {transform: translate(1px, 2px) rotate(0deg);}
+      100% {transform: translate(1px, -2px) rotate(-1deg);}
+    }
+    @keyframes slide {
+      0% {transform: translate(0px, 0px);}
+      50% {transform: translate(5px, 0px);}
+      100% {transform: translate(0px, 0px);}
     }
 
     .character-card.shake {
@@ -112,12 +182,24 @@
       from {background-color: red;}
       to {background-color: inherit;}
     }
-
+    @keyframes healed {
+      from {background-color: rgb(0, 128, 73);}
+      to {background-color: inherit;}
+    }
     .character-card.hit {
       animation: hit 1s;
       animation-iteration-count: 1;
     }
-
+    .character-card.heal {
+      transform: translateY(-5px);
+    }
+    .character-card.healed {
+      animation: healed 1s;
+      animation-iteration-count: 1;
+    }
+    .character-card.miss {
+      animation: slide 0.5s linear;
+    }
   </style>
 </head>
 
@@ -132,31 +214,31 @@
   <div id="log"></div>
 
   <script>
-  let characters = [];
-  let characterId = 0;
+    let characters = [];
+    let characterId = 0;
 
-  document.getElementById('loadFile').addEventListener('change', function (e) {
-    let file = e.target.files[0];
-    if (!file) {
-      return;
-    }
-    let reader = new FileReader();
-    reader.onload = function (e) {
-      let contents = e.target.result;
-      let data = JSON.parse(contents);
-      for (let character of data) {
-        character.id = characterId++;
-        characters.push(character);
+    document.getElementById('loadFile').addEventListener('change', function (e) {
+      let file = e.target.files[0];
+      if (!file) {
+        return;
       }
-      updateCharacterStatus();
-    };
-    reader.readAsText(file);
-  });
+      let reader = new FileReader();
+      reader.onload = function (e) {
+        let contents = e.target.result;
+        let data = JSON.parse(contents);
+        for (let character of data) {
+          character.id = characterId++;
+          characters.push(character);
+        }
+        updateCharacterStatus();
+      };
+      reader.readAsText(file);
+    });
 
-document.getElementById('startButton').addEventListener('click', function () {
-  updateCharacterStatus();
-  startBattle();
-});
+    document.getElementById('startButton').addEventListener('click', function () {
+      updateCharacterStatus();
+      startBattle();
+    });
 
     function getActionOrder() {
       let actionOrder = [];
@@ -177,157 +259,193 @@ document.getElementById('startButton').addEventListener('click', function () {
     }
 
 
-  function updateCharacterStatus() {
-    for (let character of characters) {
-      let card = document.getElementById(`character-${character.id}`);
-      if (!card) {
-        card = document.createElement("div");
-        card.id = `character-${character.id}`;
-        card.className = "character-card";
+    function updateCharacterStatus() {
+        let characterStatus = document.getElementById("characterStatus");
+        characterStatus.innerHTML = '';
+        for (let character of characters) {
+          let card = document.getElementById(`character-${character.id}`);
 
-        let img = document.createElement("img");
-        img.src = character.image ? character.image : `img/${character.role}.svg`;
-        img.className = "character-img";
-        card.appendChild(img);
+          // If the card doesn't exist, create a new one
+          if (!card) {
+            card = document.createElement("div");
+            card.id = `character-${character.id}`;
+            card.className = "character-card";
 
-        let name = document.createElement("p");
-        name.className = "character-name";
-        card.appendChild(name);
+            let img = document.createElement("img");
+            img.className = "character-img";
+            card.appendChild(img);
 
-        let hp = document.createElement("p");
-        card.appendChild(hp);
+            let name = document.createElement("p");
+            name.className = "character-name";
+            card.appendChild(name);
 
-        let role = document.createElement("p");
-        role.textContent = `Role: ${character.role}`;
-        card.appendChild(role);
+            let hp = document.createElement("p");
+            card.appendChild(hp);
 
-        document.getElementById("characterStatus").appendChild(card);
+            let role = document.createElement("p");
+            role.textContent = `Role: ${character.role}`;
+            card.appendChild(role);
+
+            // Create HP indicator
+            let hpIndicator = document.createElement('progress');
+            hpIndicator.className = 'character-hp-indicator';
+            hpIndicator.max = character.maxHP;
+            card.appendChild(hpIndicator);
+
+            characterStatus.appendChild(card);
+          }
+
+          // Update the card's image, name, and HP
+          card.className = character.hp > 0 ? "character-card" : "character-card defeat";
+          let img = card.querySelector(".character-img");
+          img.src = character.image ? character.image : `img/${character.role}.svg`;
+          let name = card.querySelector(".character-name");
+          name.textContent = character.name;
+          let hp = card.querySelector("p:nth-child(3)");
+          hp.textContent = `HP: ${character.hp}/${character.maxHP}`;
+          let hpIndicator = card.querySelector(".character-hp-indicator");
+          hpIndicator.value = character.hp;
+        }
       }
 
-      let img = card.querySelector(".character-img");
-      img.src = character.image ? character.image : `img/${character.role}.svg`;
 
-      let name = card.querySelector(".character-name");
-      name.textContent = character.name;
 
-      let hp = card.querySelector("p:nth-child(3)");
-      hp.textContent = `HP: ${character.hp}/${character.maxHP}`;
 
-      if (character.hp <= 0) {
-        card.classList.add('defeat');
+    function attack(character, target, originalTarget) {
+      // 攻撃エフェクトの関数
+      function attackEffect() {
+        setTimeout(() => {
+          let characterCard = document.getElementById(`character-${character.id}`);
+          if (characterCard) {
+            characterCard.classList.add('shake');
+            setTimeout(() => {
+              characterCard.classList.remove('shake');
+            }, 500);
+          }
+        }, 0);
       }
-    }
-  }
-
-
-  function attack(character, target, originalTarget) {
-    // 攻撃エフェクトの関数
-    function attackEffect() {
-      setTimeout(() => {
-        let characterCard = document.getElementById(`character-${character.id}`);
-        if (characterCard) {
-          characterCard.classList.add('shake');
-          setTimeout(() => {
-            characterCard.classList.remove('shake');
-          }, 500);
-        }
-      }, 0);
-    }
-    // ダメージエフェクトの関数
-    function damageEffect(damage) {
-      setTimeout(() => {
-        let targetCard = document.getElementById(`character-${target.id}`);
-        if (targetCard) {
-          console.log(target.id);
-          targetCard.classList.add('hit');
-          // ダメージ値を表示
-          let damageText = document.createElement("p");
-          damageText.textContent = Math.floor(damage);
-          damageText.className = "damage";
-          targetCard.appendChild(damageText);
-
-          setTimeout(() => {
-            targetCard.removeChild(damageText);
-            targetCard.classList.remove('hit');
-          }, 1000);
-        }
-      }, 0);
-    }
-
-    // タンクの防御行動をチェック
-    if (target.role !== 'tank') {
-      let tank = characters.find(c => c.team !== character.team && c.role === 'tank' && c.hp > 0);
-      if (tank && Math.random() < 0.5) {
-        target = tank;
-        addLog(`${tank.name}が${originalTarget.name}を守った！`, "tank_" + tank.team);
-      }
-    }
-    attackEffect()
-    setTimeout(() => {
-      if (Math.random() < character.accuracy - target.evasion) {
-        let damage = Math.max(0, Math.floor(character.attack - target.defense + character.attack * (Math.random() * 0.2 - 0.1)));
-        if (Math.random() < character.accuracy / 10) {
-          damage *= 2;
-          damageEffect(damage);
-          addLog(`${character.name} ▶ ${target.name}  ${Math.floor(damage)}ダメージ（クリティカル）！`, "attack_" + character.team);
-        } else {
-          damageEffect(damage);
-          addLog(`${character.name} ▶ ${target.name}  ${Math.floor(damage)}ダメージ！`, "attack_" + character.team);
-        }
-        target.hp -= damage;
-        if (target.hp <= 0) {
-          target.hp = 0;
-          addLog(`${target.name} が倒れた！`, "defeat_" + target.team);
-          // 倒れたキャラクターの行動順序をリストから削除
-          actionOrder = actionOrder.filter(c => c.id !== target.id);
-          
-          // 倒れたキャラクターのDOM要素に'defeat'クラスを追加
+      // ダメージエフェクトの関数
+      function damageEffect(damage) {
+        setTimeout(() => {
           let targetCard = document.getElementById(`character-${target.id}`);
           if (targetCard) {
-            targetCard.classList.add('defeat');
+            console.log(target.id);
+            targetCard.classList.add('hit');
+            // ダメージ値を表示
+            let damageText = document.createElement("p");
+            damageText.textContent = Math.floor(damage);
+            damageText.className = "damage";
+            targetCard.appendChild(damageText);
+
+            setTimeout(() => {
+              targetCard.removeChild(damageText);
+              targetCard.classList.remove('hit');
+            }, 1000);
           }
-        }
-      } else {
-        addLog(`${character.name} の攻撃が ${target.name} にミス！`, "miss_" + character.team);
+        }, 0);
       }
-    }, 300);
-  }
+      // ミスエフェクトの関数
+      function missEffect() {
+        setTimeout(() => {
+          let targetCard = document.getElementById(`character-${target.id}`);
+          if (targetCard) {
+            targetCard.classList.add('miss');
+            // 回避表示
+            let missText = document.createElement("p");
+            missText.textContent = "回避";
+            missText.className = "miss";
+            targetCard.appendChild(missText);
+            setTimeout(() => {
+              targetCard.classList.remove('miss');
+              targetCard.removeChild(missText);
+            }, 500);
+          }
+        }, 0);
+      }
 
-
-  function startBattle() {
-    let turn = 0;
-
-    // 行動順序のリストを生成
-    let actionOrder = getActionOrder();
-
-    function nextTurn() {
-      if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0 &&
-        characters.filter(c => c.team === 'B' && c.hp > 0).length > 0) {
-
-        // 行動順序のリストに従ってキャラクターが行動
-        let character = actionOrder[turn % actionOrder.length];
-
-        if (character.hp <= 0) {
-          // HPが0以下のキャラクターは行動しない
-          turn++;
-          setTimeout(nextTurn, 1000);
-          return;
+      // タンクの防御行動をチェック
+      if (target.role !== 'tank') {
+        let tank = characters.find(c => c.team !== character.team && c.role === 'tank' && c.hp > 0);
+        if (tank && Math.random() < 0.5) {
+          target = tank;
+          addLog(`${tank.name}が${originalTarget.name}を守った！`, "tank_" + tank.team);
         }
+      }
+      attackEffect()
+      setTimeout(() => {
+        if (Math.random() < character.accuracy - target.evasion) {
+          let damage = Math.max(0, Math.floor(character.attack - target.defense + character.attack * (Math.random() * 0.2 - 0.1)));
+          if (Math.random() < character.accuracy / 10) {
+            damage *= 2;
+            damageEffect(damage);
+            addLog(`${character.name} ▶ ${target.name}  ${Math.floor(damage)}ダメージ（クリティカル）！`, "attack_" + character.team);
+          } else {
+            damageEffect(damage);
+            addLog(`${character.name} ▶ ${target.name}  ${Math.floor(damage)}ダメージ！`, "attack_" + character.team);
+          }
+          target.hp -= damage;
+          if (target.hp <= 0) {
+            target.hp = 0;
+            addLog(`${target.name} が倒れた！`, "defeat_" + target.team);
+            // 倒れたキャラクターの行動順序をリストから削除
+            actionOrder = actionOrder.filter(c => c.id !== target.id);
 
-        // ヒーラーの回復行動
-        if (character.role === 'healer') {
-          let allies = characters.filter(c => c.team === character.team && c.hp > 0 && c.hp < c.maxHP); // 死亡キャラクターを除外
-          if (allies.length > 0 && Math.random() < 0.5) {
-            let ally = allies[Math.floor(Math.random() * allies.length)];
-            let heal = character.attack;
-            ally.hp = Math.min(ally.hp + heal, ally.maxHP);
-            addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
+            // 倒れたキャラクターのDOM要素に'defeat'クラスを追加
+            let targetCard = document.getElementById(`character-${target.id}`);
+            if (targetCard) {
+              targetCard.classList.add('defeat');
+            }
+          }
+          // Update HP indicator
+          updateHpIndicator(target);
+        } else {
+          missEffect();
+          addLog(`${character.name} の攻撃が ${target.name} にミス！`, "miss_" + character.team);
+        }
+      }, 300);
+
+      
+      
+    }
+
+
+    function startBattle() {
+      let turn = 0;
+
+      // 行動順序のリストを生成
+      let actionOrder = getActionOrder();
+
+      function nextTurn() {
+        if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0 &&
+          characters.filter(c => c.team === 'B' && c.hp > 0).length > 0) {
+
+          // 行動順序のリストに従ってキャラクターが行動
+          let character = actionOrder[turn % actionOrder.length];
+
+          if (character.hp <= 0) {
+            // HPが0以下のキャラクターは行動しない
             turn++;
-            // updateCharacterStatus(); 行動毎に更新しない
             setTimeout(nextTurn, 1000);
             return;
           }
-        }
+
+          // ヒーラーの回復行動
+          if (character.role === 'healer') {
+            let allies = characters.filter(c => c.team === character.team && c.hp > 0 && c.hp < c.maxHP); // 死亡キャラクターを除外
+            if (allies.length > 0 && Math.random() < 0.5) {
+              let ally = allies[Math.floor(Math.random() * allies.length)];
+              let heal = character.attack;
+              ally.hp = Math.min(ally.hp + heal, ally.maxHP);
+              healEffect(character, ally);
+              healValueEffect(ally, heal);
+              addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
+              turn++;
+              // Update HP indicator
+              updateHpIndicator(ally);
+              setTimeout(nextTurn, 1000);
+              return;
+            }
+          }
 
           let targets = characters.filter(c => c.team !== character.team && c.hp > 0);
           if (targets.length > 0) {
@@ -350,17 +468,65 @@ document.getElementById('startButton').addEventListener('click', function () {
           updateCharacterStatus(); // 戦闘が終わったらステータスを更新
         }
       }
-    // 全キャラクターの'defeat'クラスをリセット
-    for (let character of characters) {
-      let characterCard = document.getElementById(`character-${character.id}`);
-      if (characterCard) {
-        characterCard.classList.remove('defeat');
+      // 全キャラクターの'defeat'クラスをリセット
+      for (let character of characters) {
+        let characterCard = document.getElementById(`character-${character.id}`);
+        if (characterCard) {
+          characterCard.classList.remove('defeat');
+        }
       }
-    }
+      function updateHpIndicator(character) {
+        let hpIndicator = document.querySelector(`#character-${character.id} .character-hp-indicator`);
+        if (hpIndicator) {
+          hpIndicator.value = character.hp;
+        }
+      }
       nextTurn();
     }
 
+    // ヒールエフェクトの関数
+    function healEffect(healer, target) {
+      setTimeout(() => {
+        let healerCard = document.getElementById(`character-${healer.id}`);
+        let targetCard = document.getElementById(`character-${target.id}`);
+        if (healerCard && targetCard) {
+          healerCard.classList.add('heal');
+          targetCard.classList.add('healed');
+          setTimeout(() => {
+            healerCard.classList.remove('heal');
+            targetCard.classList.remove('healed');
+          }, 500);
+        }
+      }, 0);
+    }
 
+    // ヒール値エフェクトの関数
+    function healValueEffect(target, heal) {
+      setTimeout(() => {
+        let targetCard = document.getElementById(`character-${target.id}`);
+        if (targetCard) {
+          // ヒール値を表示
+          let healText = document.createElement("p");
+          healText.textContent = "+" + Math.floor(heal);
+          healText.className = "heal";
+          targetCard.appendChild(healText);
+
+          setTimeout(() => {
+            targetCard.removeChild(healText);
+          }, 1000);
+        }
+      }, 0);
+    }
+    function updateHpIndicator(character) {
+      // Update HP indicator for a specific character
+      let card = document.getElementById(`character-${character.id}`);
+      if (card) {
+        let hpIndicator = card.querySelector(".character-hp-indicator");
+        if (hpIndicator) {
+          hpIndicator.value = character.hp;
+        }
+      }
+    }
     function addLog(text, className) {
       let log = document.getElementById("log");
       let div = document.createElement("div");
