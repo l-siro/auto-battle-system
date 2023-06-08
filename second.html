@@ -158,9 +158,6 @@ document.getElementById('startButton').addEventListener('click', function () {
   startBattle();
 });
 
-
-
-
     function getActionOrder() {
       let actionOrder = [];
       // 最大速度を取得
@@ -256,6 +253,7 @@ document.getElementById('startButton').addEventListener('click', function () {
         }
       }, 0);
     }
+
     // タンクの防御行動をチェック
     if (target.role !== 'tank') {
       let tank = characters.find(c => c.team !== character.team && c.role === 'tank' && c.hp > 0);
@@ -280,7 +278,9 @@ document.getElementById('startButton').addEventListener('click', function () {
         if (target.hp <= 0) {
           target.hp = 0;
           addLog(`${target.name} が倒れた！`, "defeat_" + target.team);
-
+          // 倒れたキャラクターの行動順序をリストから削除
+          actionOrder = actionOrder.filter(c => c.id !== target.id);
+          
           // 倒れたキャラクターのDOM要素に'defeat'クラスを追加
           let targetCard = document.getElementById(`character-${target.id}`);
           if (targetCard) {
