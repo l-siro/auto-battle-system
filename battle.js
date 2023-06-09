@@ -131,8 +131,10 @@ function takeTurn() {
 
     switch (strategy) {
       case 'ガンガン':
-        // find first enemy
-        let target = characters.find(c => c.side !== activeCharacter.side && c.hp > 0);
+        // find live enemies
+        let targets = characters.filter(c => c.side !== activeCharacter.side && c.hp > 0);
+        // random selection
+        let target = targets[Math.floor(Math.random() * targets.length)];
 
         if (target) {
           attack(activeCharacter, target);
@@ -147,22 +149,18 @@ function takeTurn() {
     }
 
     // check if all allies or enemies are defeated
-    let allies = characters.filter(c => c.side === 'ally');
-    let enemies = characters.filter(c => c.side === 'enemy');
+    let allies = characters.filter(c => c.side === 'ally' && c.hp > 0);
+    let enemies = characters.filter(c => c.side === 'enemy' && c.hp > 0);
 
-    if (allies.every(a => a.hp <= 0) || enemies.every(e => e.hp <= 0)) {
+    if (allies.length === 0 || enemies.length === 0) {
       // battle over
       return;
     }
 
-    if (turn === 0 && phase % 5 === 0 && phase > 0) {
-      alert("5ターンが経過しました。作戦を再選択してください。");
-      return;
-    }
-
-    setTimeout(takeTurn, 10);
+    setTimeout(takeTurn, 1000);
   }
 }
+
 
 // basic attack function
 function attack(attacker, target) {
