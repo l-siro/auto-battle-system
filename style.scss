@@ -1,0 +1,125 @@
+:root {
+  font-size: 10px;
+}
+
+body {
+  background: #ccc;
+}
+
+.app-display {
+  display: flex;
+  width: 100%;
+  height: 400px;
+}
+
+#order-of-action {
+  width: 20%;
+  height: 100%;
+  background: #ddd;
+  overflow: auto;
+}
+
+#battle-field {
+  width: 80%;
+  height: 100%;
+  background: #eee;
+  position: relative;
+  overflow: auto;
+  display: flex;
+  justify-content: space-between;
+}
+
+.enemy-side,
+.ally-side {
+  width: 50%;
+  padding: 10px;
+}
+
+.character {
+  width: 100px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  margin: 15px;
+  padding: 5px 5px 25px;
+  .strategy-select {
+    width: 100%;
+    font-size: 1rem;
+  }
+  &-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+  &-img {
+    width: 100%;
+    height: 50px;
+    object-fit: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  &-hp-indicator,
+  &-sp-indicator {
+    width: 100%;
+    height: 10px;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+  &-hp-indicator {
+    bottom: 10px;
+    &::-webkit-progress-value {
+      background-color: #8dff8d;
+    }
+    &::-webkit-progress-bar {
+      background-color: #ff8d8d;
+    }
+  }
+  &-sp-indicator {
+    &::-webkit-progress-value {
+      background-color: #a6a6ff;
+    }
+    &::-webkit-progress-bar {
+      background-color: #e5e5e5;
+    }
+  }
+}
+.gui {
+  width: 100%;
+  height: 80px;
+  font-size: 1.4rem;
+  background: #ddd;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+#battle-log {
+  width: 100%;
+  height: 100px;
+  background: #ccc;
+  overflow-y: scroll;
+}
+
+
+progress {
+  display: block;
+}
+
+input#upload {
+  display: block;
+}
+
+#start-battle {
+  display: block;
+}

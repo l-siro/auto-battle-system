@@ -1,22 +1,26 @@
 [
   {
-    "name": "ゴブリン",
-    "attack": 10,
+    "name": "ゴブリン・ヒーラー",
+    "attack": 15,
     "defense": 5,
-    "hp": 50,
+    "hp": 130,
+    "maxHP": 130,
     "speed": 5,
     "accuracy": 0.9,
     "evasion": 0.1,
+    "role": "healer",
     "team": "B"
   },
   {
     "name": "オーガ",
-    "attack": 15,
+    "attack": 20,
     "defense": 10,
-    "hp": 100,
+    "hp": 300,
+    "maxHP": 300,
     "speed": 10,
     "accuracy": 0.8,
     "evasion": 0.2,
+    "role": "tank",
     "team": "B"
   }
 ]

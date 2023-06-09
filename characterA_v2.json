@@ -1,0 +1,40 @@
+[
+  {
+    "name": "デスサイズ",
+    "team": "A",
+    "dexterity": 15,
+    "agility": 20,
+    "strength": 10,
+    "vitality": 25,
+    "intelligence": 30,
+    "spirit": 20,
+    "element": "fire",
+    "weakness": "water",
+    "shield": 0,
+    "maxShield": 100,
+    "skills": [
+      "skill1",
+      "skill2",
+      "skill3"
+    ]
+  },
+  {
+    "name": "リオ",
+    "team": "A",
+    "dexterity": 10,
+    "agility": 15,
+    "strength": 30,
+    "vitality": 40,
+    "intelligence": 20,
+    "spirit": 20,
+    "element": "water",
+    "weakness": "earth",
+    "shield": 50,
+    "maxShield": 100,
+    "skills": [
+      "skill4",
+      "skill5",
+      "skill6"
+    ]
+  }
+]

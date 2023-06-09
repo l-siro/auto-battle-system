@@ -1,0 +1,100 @@
+[
+  {
+    "side": "ally",
+    "name": "アーサー",
+    "vitality": 70,
+    "strength": 65,
+    "dexterity": 80,
+    "agility": 70,
+    "intelligence": 60,
+    "spirit": 50,
+    "weakness": "light",
+    "experience": 0,
+    "skills": [
+      "sword",
+      "shield"
+    ],
+    "items": [
+      "potion"
+    ]
+  },
+  {
+    "side": "ally",
+    "name": "クルト",
+    "vitality": 80,
+    "strength": 60,
+    "dexterity": 65,
+    "agility": 80,
+    "intelligence": 75,
+    "spirit": 60,
+    "weakness": "water",
+    "experience": 0,
+    "skills": [
+      "magic",
+      "healing"
+    ],
+    "items": [
+      "potion",
+      "elixir"
+    ]
+  },
+  {
+    "side": "ally",
+    "name": "ヴァルター",
+    "vitality": 75,
+    "strength": 70,
+    "dexterity": 65,
+    "agility": 30,
+    "intelligence": 60,
+    "spirit": 75,
+    "weakness": "darkness",
+    "experience": 0,
+    "skills": [
+      "archery",
+      "stealth"
+    ],
+    "items": [
+      "potion",
+      "smoke bomb"
+    ]
+  },
+  {
+    "side": "enemy",
+    "name": "ゴブリン",
+    "vitality": 60,
+    "strength": 50,
+    "dexterity": 55,
+    "agility": 65,
+    "intelligence": 40,
+    "spirit": 45,
+    "weakness": "fire",
+    "experience": 0,
+    "skills": [
+      "attack",
+      "run"
+    ],
+    "items": [
+      "potion"
+    ]
+  },
+  {
+    "side": "enemy",
+    "name": "オーク",
+    "vitality": 80,
+    "strength": 70,
+    "dexterity": 60,
+    "agility": 65,
+    "intelligence": 45,
+    "spirit": 50,
+    "weakness": "slashing",
+    "experience": 0,
+    "skills": [
+      "attack",
+      "defend"
+    ],
+    "items": [
+      "potion",
+      "magic stone"
+    ]
+  }
+]

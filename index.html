@@ -3,17 +3,26 @@
 
 <head>
   <title>Battle Simulator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Roboto:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    :root {
+      font-size: 10px;
     }
 
-    #status,
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
     #log {
       border: 1px solid black;
       padding: 10px;
       margin-bottom: 10px;
-      height: 300px;
+      height: 120px;
       overflow-y: scroll;
     }
 
@@ -35,14 +44,242 @@
       color: green;
     }
 
-    #characterList {
-      margin-bottom: 10px;
+    #characterStatus {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background: #eee;
+      padding: 20px;
+      gap: 10px;
     }
 
-    #characterList .character {
-      margin-bottom: 5px;
-      padding: 5px;
-      border: 1px solid black;
+    .character-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 5px;
+      overflow: hidden;
+      background: #fff;
+      padding: 20px 15px;
+      max-width: 25%;
+      position: relative;
+      width: 120px;
+      transition: .5s;
+    }
+
+    .character-card .damage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 4rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      color: red;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 4px;
+      padding: 0 5px 0 0;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .character-card .heal {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 4rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      color: green;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      padding: 0 5px 0 0;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .character-card .miss {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      height: 100%;
+      width: 100%;
+      text-align: center;
+      color: gray;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      padding: 0 5px 0 0;
+      font-family: 'Noto Sans JP', sans-serif;
+      line-height: 1.4;
+    }
+
+    .character-card.defeat {
+      opacity: 0.5;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .character-img {
+      width: 50px;
+      height: 50px;
+    }
+
+    .character-name {
+      font-size: 1.8rem;
+      margin: 10px 0;
+    }
+
+    .character-stats {
+      margin: 10px 0;
+    }
+
+    .character-hp-indicator {
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .character-hp-indicator::-webkit-progress-bar {
+      background-color: #ff8d8d;
+    }
+
+    .character-hp-indicator::-webkit-progress-value {
+      background-color: #8dff8d;
+    }
+
+    #startButton {
+      background-color: #4CAF50;
+      /* Green */
+      border: none;
+      color: white;
+      padding: 5px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      font-size: 16px;
+      margin: 15px auto;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    #startButton:hover {
+      cursor: pointer;
+      opacity: 0.6;
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translate(1px, 1px) rotate(0deg);
+      }
+
+      10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+      }
+
+      20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+      }
+
+      30% {
+        transform: translate(3px, 2px) rotate(0deg);
+      }
+
+      40% {
+        transform: translate(1px, -1px) rotate(1deg);
+      }
+
+      50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+      }
+
+      60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+      }
+
+      70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+      }
+
+      80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+      }
+
+      90% {
+        transform: translate(1px, 2px) rotate(0deg);
+      }
+
+      100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+      }
+    }
+
+    @keyframes slide {
+      0% {
+        transform: translate(0px, 0px);
+      }
+
+      50% {
+        transform: translate(5px, 0px);
+      }
+
+      100% {
+        transform: translate(0px, 0px);
+      }
+    }
+
+    .character-card.shake {
+      animation: shake 0.5s;
+      animation-iteration-count: 1;
+    }
+
+    @keyframes hit {
+      from {
+        background-color: red;
+      }
+
+      to {
+        background-color: inherit;
+      }
+    }
+
+    @keyframes healed {
+      from {
+        background-color: rgb(0, 128, 73);
+      }
+
+      to {
+        background-color: inherit;
+      }
+    }
+
+    .character-card.hit {
+      animation: hit 1s;
+      animation-iteration-count: 1;
+    }
+
+    .character-card.heal {
+      transform: translateY(-5px);
+    }
+
+    .character-card.healed {
+      animation: healed 1s;
+      animation-iteration-count: 1;
+    }
+
+    .character-card.miss {
+      animation: slide 0.5s linear;
     }
   </style>
 </head>
@@ -50,183 +287,14 @@
 <body>
   <h1>Battle Simulator</h1>
 
-  <div id="characterList"></div>
-
   <form id="addCharacterForm">
     <input type="file" id="loadFile">
-
-    <input type="text" id="name" placeholder="名前" required>
-    <input type="number" id="attack" placeholder="攻撃力" min="1" required>
-    <input type="number" id="defense" placeholder="防御力" min="0" required>
-    <input type="number" id="hp" placeholder="HP" min="1" required>
-    <input type="number" id="speed" placeholder="速力" min="0" required>
-    <input type="number" id="accuracy" placeholder="命中力" min="0" max="1" step="0.1" required>
-    <input type="number" id="evasion" placeholder="回避力" min="0" max="1" step="0.1" required>
-    <input type="" id="role" placeholder="役職" required>
-    <select id="role" required>
-      <option value="">role</option>
-      <option value="attacker">attacker</option>
-      <option value="healer">healer</option>
-      <option value="tank">tank</option>
-    </select>
-    <select id="team" required>
-      <option value="">Team</option>
-      <option value="A">A</option>
-      <option value="B">B</option>
-    </select>
-    <input type="submit" value="Add Character">
   </form>
-
+  <div id="characterStatus"></div>
   <button id="startButton">Start Battle</button>
-
-  <div id="status"></div>
   <div id="log"></div>
 
-  <script>
-    let characters = [];
-
-    document.getElementById('loadFile').addEventListener('change', function (e) {
-      let file = e.target.files[0];
-      if (!file) {
-        return;
-      }
-      let reader = new FileReader();
-      reader.onload = function (e) {
-        let contents = e.target.result;
-        let data = JSON.parse(contents);
-        for (let character of data) {
-          characters.push(character);
-        }
-        updateCharacterList();
-        updateStatus();
-      };
-      reader.readAsText(file);
-    });
-
-
-    document.getElementById('addCharacterForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      let character = {
-        name: event.target.name.value,
-        attack: event.target.attack.value,
-        defense: event.target.defense.value,
-        hp: event.target.hp.value,
-        speed: event.target.speed.value,
-        accuracy: event.target.accuracy.value,
-        evasion: event.target.evasion.value,
-        team: event.target.team.value
-      };
-      characters.push(character);
-      event.target.reset();
-      updateCharacterList();
-    });
-
-    document.getElementById('startButton').addEventListener('click', function () {
-      characters.sort((a, b) => b.speed - a.speed);
-      updateStatus();
-      startBattle();
-    });
-
-    function updateStatus() {
-      let status = document.getElementById("status");
-      status.innerHTML = '';
-      for (let character of characters) {
-        let div = document.createElement("div");
-        div.textContent = `チーム${character.team}の${character.name}：残りHP ${Math.max(character.hp, 0)}`;
-        status.appendChild(div);
-      }
-    }
-
-    function updateCharacterList() {
-      let characterList = document.getElementById("characterList");
-      characterList.innerHTML = '';
-      for (let character of characters) {
-        let div = document.createElement("div");
-        div.textContent = `チーム${character.team}の${character.name}： 攻撃力 ${character.attack}, 防御力 ${character.defense}, HP ${character.hp}, 速度 ${character.speed}, 命中率 ${character.accuracy}, 回避率 ${character.evasion}`;
-        div.className = "character";
-        characterList.appendChild(div);
-      }
-    }
-
-    function startBattle() {
-      let turn = 0;
-      function nextTurn() {
-        if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0 &&
-          characters.filter(c => c.team === 'B' && c.hp > 0).length > 0) {
-          let activeCharacters = characters.filter(c => c.hp > 0);
-          let character = activeCharacters[turn % activeCharacters.length];
-
-          // ヒーラーの回復行動
-          if (character.role === 'healer') {
-            let allies = characters.filter(c => c.team === character.team && c.hp < c.maxHP);
-            if (allies.length > 0 && Math.random() < 0.5) {
-              let ally = allies[Math.floor(Math.random() * allies.length)];
-              let heal = character.attack;
-              ally.hp = Math.min(ally.hp + heal, ally.maxHP);
-              addLog(`${character.name} → ${ally.name}  ${Math.floor(heal)}HP回復！`, "heal_" + character.team);
-              turn++;
-              updateStatus();
-              setTimeout(nextTurn, 1000);
-              return;
-            }
-          }
-
-          let targets = characters.filter(c => c.team !== character.team && c.hp > 0);
-          if (targets.length > 0) {
-            let target = targets[Math.floor(Math.random() * targets.length)];
-
-            // タンクの防御行動
-            if (target.role === 'tank') {
-              let allies = characters.filter(c => c.team === target.team && c.hp > 0 && c !== target);
-              if (allies.length > 0) {
-                let ally = allies[Math.floor(Math.random() * allies.length)];
-                addLog(`${target.name}が${ally.name}のダメージを引き受けた！`, "tank_" + target.team);
-              }
-            }
-
-            if (Math.random() < character.accuracy - target.evasion) {
-              let damage = Math.max(0, Math.floor(character.attack - target.defense + character.attack * (Math.random() * 0.2 - 0.1)));
-              if (Math.random() < character.accuracy / 10) {
-                damage *= 2;
-                addLog(`${character.name} → ${target.name}  ${Math.floor(damage)}ダメージ（クリティカル）！`, "attack_" + character.team);
-              } else {
-                addLog(`${character.name} → ${target.name}  ${Math.floor(damage)}ダメージ！`, "attack_" + character.team);
-              }
-              target.hp -= damage;
-              if (target.hp <= 0) {
-                target.hp = 0;
-                addLog(`${target.name} が倒れた！`, "defeat_" + target.team);
-              }
-            } else {
-              addLog(`${character.name} の攻撃が ${target.name} にミス！`, "miss_" + character.team);
-            }
-          }
-          turn++;
-          updateStatus();
-          setTimeout(nextTurn, 1000);
-        } else {
-          if (characters.filter(c => c.team === 'A' && c.hp > 0).length > 0) {
-            addLog("チームAが勝利した！", "result");
-          } else {
-            addLog("チームBが勝利した！", "result");
-          }
-          battleInProgress = false;
-        }
-      }
-
-
-      nextTurn();
-    }
-
-    function addLog(text, className) {
-      let log = document.getElementById("log");
-      let div = document.createElement("div");
-      div.textContent = text;
-      div.className = className;
-      log.appendChild(div);
-      log.scrollTop = log.scrollHeight;
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 
 </html>
