@@ -1,8 +1,10 @@
 // ターン時間を設定
 const turnTime = 1000;
+
 const uploadInput = document.getElementById('upload');
 const battleLogDiv = document.getElementById('battle-log');
 
+// キャラクターのステータスを表示する要素を取得
 let battleField = document.getElementById('battle-field');
 let orderOfActionDiv = document.getElementById('order-of-action');
 
@@ -29,14 +31,21 @@ function createCharacter(character) {
   // initialize character stats
   character.hp = character.vitality * 10;
   character.maxHP = character.vitality * 10;
-  character.sp = character.intelligence * 5;
-  character.maxSP = character.intelligence * 5;
   character.attack = character.strength * 2;
   character.defense = character.vitality;
   character.accuracy = character.dexterity / 100;
   character.evasion = character.agility / 100;
   character.speed = character.agility / 2;
   character.shield = Math.floor(character.spirit / 20);
+
+  // Assign skills to the character based on their skill names
+  character.actions = [];
+  character.skills.forEach(skillName => {
+    let skill = skills.find(s => s.name === skillName);
+    if (skill) {
+      character.actions.push(skill);
+    }
+  });
 
   // 武器のステータスを反映
   if (weapon) {
@@ -47,6 +56,7 @@ function createCharacter(character) {
     character.evasion += weapon.evasion;
     character.speed += weapon.speed;
   }
+
 
   // create div for character
   const characterDiv = document.createElement('div');
@@ -75,13 +85,6 @@ function createCharacter(character) {
   hpProgressBar.setAttribute('max', character.maxHP);
   hpProgressBar.setAttribute('value', character.hp);
   boxDiv.appendChild(hpProgressBar);
-
-  // create SP progress bar
-  const spProgressBar = document.createElement('progress');
-  spProgressBar.classList.add('character-sp-indicator');
-  spProgressBar.setAttribute('max', character.maxSP);
-  spProgressBar.setAttribute('value', character.sp);
-  boxDiv.appendChild(spProgressBar);
 
   // create select box for strategy
   const selectStrategy = document.createElement('select');
@@ -183,11 +186,57 @@ startBattleButton.addEventListener('click', function () {
   takeTurn();
 });
 
+// 共有SPを定義
+let sharedSP = {
+  ally: 0,
+  enemy: 0
+};
+
+// SP表示用の要素を取得 
+let spElements = {
+  ally: document.getElementById('ally-sp'),
+  enemy: document.getElementById('enemy-sp')
+};
+
+// SPの値が変わったときに呼び出す関数
+function updateSP(side) {
+  let spElement = spElements[side];
+  spElement.innerHTML = '';
+  for (let i = 0; i < sharedSP[side]; i++) {
+    let spCircle = document.createElement('div');
+    spCircle.classList.add('sp-circle');
+    spElement.appendChild(spCircle);
+  }
+}
+
+// スキルを使ったときなど、SPが使われる処理
+function useSP(amount, side) {
+  sharedSP[side] -= amount;
+  updateSP(side);  // 表示を更新
+}
+
+// 新たなターンが始まるときなど、SPが回復する処理
+function recoverSP(amount, side) {
+  sharedSP[side] += amount;
+  updateSP(side);  // 表示を更新
+}
+
+// キャラクターがアクションを取るたびに呼び出す関数
+function takeAction(character) {
+  // アクションを実行する（例：スキルを使う）
+  useSP(5, character.side);  // sideは 'ally' または 'enemy'
+}
+
+
+
 function takeTurn() {
   let activeCharacter = actionOrderObjects[turn];
   let activeOrderElement = orderOfActionDiv.getElementsByClassName('order')[turn];
 
-  // check if character is alive
+  // activeCharacterのsideに基づいて、SPを1増加させる
+  recoverSP(1, activeCharacter.side);
+
+  // Check if character is alive
   if (activeCharacter && activeCharacter.hp > 0) {
     // select strategy
     let strategy = document.querySelector(`.character[data-name="${activeCharacter.name}"] .strategy-select`).value;
@@ -196,52 +245,42 @@ function takeTurn() {
     let enemies = characters.filter(c => c.side !== activeCharacter.side && c.hp > 0);
     let allies = characters.filter(c => c.side === activeCharacter.side && c.hp > 0);
 
-    let preferredAction = '';
-
-    switch (strategy) {
-      case 'ガンガン':
-        preferredAction = 'damage';
-        break;
-      case '命大事に':
-        preferredAction = 'healing';
-        break;
-      // add other strategies here
-    }
-
-    let availableActions = activeCharacter.skills.filter(s => s.type === preferredAction);
-    if (Math.random() < 0.2) { // 20% chance to perform a normal attack
-      availableActions.push({ name: '通常攻撃', type: 'damage' }); // added 'name' and 'type' property for normal attack
-    }
-
     // Select action and target
     let action;
     let target;
 
-    if (availableActions.length > 0) {
-      // Filter actions that can be performed with the current SP
-      let affordableActions = availableActions.filter(a => a.spCost <= activeCharacter.sp);
-
-      // If there are no affordable actions, default to normal attack
-      if (affordableActions.length === 0) {
-        action = { name: '通常攻撃', type: 'damage' };
-        target = enemies[Math.floor(Math.random() * enemies.length)];
+    // activeCharacterが利用可能なアクションを取得
+    let availableActions = activeCharacter.actions.filter(action => {
+      if (action.type === 'healing') {
+        // allyの中で少なくとも1人が回復可能ならこのアクションは利用可能
+        return allies.some(ally => ally.hp < ally.maxHP);
       } else {
-        action = affordableActions[Math.floor(Math.random() * affordableActions.length)];
+        // エネミーが1人でも生きていればこのアクションは利用可能
+        return enemies.length > 0;
+      }
+    });
+    // 共有SPが足りるアクションだけをフィルタリング
+    let affordableActions = availableActions.filter(a => a.spCost <= sharedSP[activeCharacter.side]);
 
-        if (action.type === 'healing') {
-          let healableAllies = allies.filter(ally => ally.hp < ally.maxHP);
-          if (healableAllies.length > 0) {
-            target = healableAllies[Math.floor(Math.random() * healableAllies.length)];
-          } else {
-            action = { name: '通常攻撃', type: 'damage' }; // Default to a normal attack if no allies need healing
-            target = enemies[Math.floor(Math.random() * enemies.length)];
-          }
+
+    if (affordableActions.length > 0) {
+      action = affordableActions[Math.floor(Math.random() * affordableActions.length)];
+      // 必要なSPを共有SPから減算
+      useSP(action.spCost, activeCharacter.side);
+
+      if (action.type === 'healing') {
+        let healableAllies = allies.filter(ally => ally.hp < ally.maxHP);
+        if (healableAllies.length > 0) {
+          target = healableAllies[Math.floor(Math.random() * healableAllies.length)];
         } else {
+          action = { name: '通常攻撃', type: 'damage' };
           target = enemies[Math.floor(Math.random() * enemies.length)];
         }
+      } else {
+        target = enemies[Math.floor(Math.random() * enemies.length)];
       }
     } else {
-      action = { name: '通常攻撃', type: 'damage' }; // default to a normal attack
+      action = { name: '通常攻撃', type: 'damage' };
       target = enemies[Math.floor(Math.random() * enemies.length)];
     }
 
@@ -249,9 +288,7 @@ function takeTurn() {
       if (action.name === '通常攻撃') {
         attack(activeCharacter, target);
       } else {
-        useSkill(activeCharacter, target, action); // replaced 'action.effect(activeCharacter, target)' with useSkill function
-        // Subtract the SP cost of the skill from the character's SP
-        activeCharacter.sp -= action.spCost;
+        useSkill(activeCharacter, target, action);
       }
     }
   }
@@ -266,6 +303,7 @@ function takeTurn() {
   turn++;
   if (turn >= actionOrderObjects.length) {
     turn = 0;
+    phase++;
   }
 
   // check if all allies or enemies are defeated
@@ -277,12 +315,13 @@ function takeTurn() {
     return;
   }
 
-  if (turn === 0 && phase % 5 === 0 && phase > 0) {
-    alert("5ターンが経過しました。作戦を再選択してください。");
-    return;
-  }
+  // if (turn === 0 && phase % 5 === 0 && phase > 0) {
+  //   alert("5ターンが経過しました。作戦を再選択してください。");
+  //   return;
+  // }
   setTimeout(takeTurn, turnTime);
 }
+
 
 
 
@@ -388,32 +427,28 @@ function useSkill(user, target, skill) {
 
 
 
-
-
-
 // スキル定義
 let skills = [
   {
     name: 'healing',
     type: 'healing',
-    spCost: 50,
+    spCost: 3,
     effect: function (user, target) {
       let healingAmount = user.spirit;
       if (target.hp + healingAmount > target.maxHP) {
         healingAmount = target.maxHP - target.hp;
       }
       target.hp += healingAmount;
-      user.sp -= this.spCost;
       return healingAmount;
     },
     condition: function (user, target) {
-      return user.sp >= this.spCost && target.hp < target.maxHP && target.side === user.side && target.hp > 0;
+      return sharedSP[user.side] >= this.spCost && target.hp < target.maxHP && target.side === user.side && target.hp > 0;
     }
   },
   {
     name: 'fireball',
     type: 'damage',
-    spCost: 40,
+    spCost: 5,
     effect: function (user, target) {
       let damage = user.intelligence * 2;
       if (target.weakness === 'fire') {
@@ -423,16 +458,13 @@ let skills = [
         damage = target.hp;
       }
       target.hp -= damage;
-      user.sp -= this.spCost;
       return damage;
     },
     condition: function (user, target) {
-      return user.sp >= this.spCost && target.hp > 0 && target.side !== user.side;
+      return sharedSP[user.side] >= this.spCost && target.hp > 0 && target.side !== user.side;
     }
   }
 ];
-
-
 
 // convert character skills from names to objects
 for (let character of characters) {
@@ -450,24 +482,17 @@ function checkDefeated(character) {
   }
 }
 
-
 // status更新関数
 function updateStatus(character) {
   let statusDiv = document.querySelector(`.character[data-name="${character.name}"] .status`);
   let hpElement = statusDiv.querySelector('.hp');
-  let spElement = statusDiv.querySelector('.sp');
 
   hpElement.textContent = character.hp;
-  spElement.textContent = character.sp;
 
   // add update to the indicators
   let characterHPIndicator = document.querySelector(`.character[data-name="${character.name}"] .character-hp-indicator`);
   characterHPIndicator.value = character.hp;
-
-  let characterSPIndicator = document.querySelector(`.character[data-name="${character.name}"] .character-sp-indicator`);
-  characterSPIndicator.value = character.sp;
 }
-
 
 
 
@@ -528,3 +553,10 @@ function applyRecoveryEffect(character, recoveryAmount) {
     characterDiv.removeChild(recoveryDiv);
   }, 500); // Remove the recovery effect after 500ms
 }
+
+
+
+// バトルログ表示
+document.querySelector('#battle-log').addEventListener('click', function () {
+  this.classList.toggle('open');
+});

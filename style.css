@@ -54,9 +54,50 @@ body {
           justify-content: space-between;
 }
 
+.battle-field__item {
+  width: 50%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#ally-sp,
+#enemy-sp {
+  width: 100%;
+  height: 40px;
+  padding: 0 40px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+#ally-sp .sp-circle,
+#enemy-sp .sp-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ffc258;
+  margin: 1px;
+}
+
 .enemy-side,
 .ally-side {
-  width: 50%;
   padding: 10px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -68,6 +109,7 @@ body {
       -ms-flex-pack: center;
           justify-content: center;
   gap: 20px;
+  position: relative;
 }
 
 .character {
@@ -105,6 +147,10 @@ body {
 }
 .character.damage {
   position: relative;
+  -webkit-transform: scale(0.98);
+          transform: scale(0.98);
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
 }
 .character.damage::after {
   content: "";
@@ -122,7 +168,7 @@ body {
   top: 0;
   height: 100%;
   width: 100%;
-  padding-top: 70px;
+  padding-top: 100px;
   font-size: 2.5rem;
   color: #ff0000;
   text-align: center;
@@ -150,7 +196,7 @@ body {
   top: 0;
   height: 100%;
   width: 100%;
-  padding-top: 70px;
+  padding-top: 100px;
   font-size: 2.5rem;
   color: #00a987;
   text-align: center;
@@ -261,8 +307,9 @@ body {
   bottom: 0;
   left: 0;
   z-index: 1;
+  cursor: pointer;
 }
-#battle-log:hover {
+#battle-log.open {
   height: 400px;
 }
 #battle-log div:first-child {
