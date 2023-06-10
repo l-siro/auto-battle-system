@@ -107,7 +107,6 @@ function createCharacter(character) {
   characterStatusDiv.innerHTML = `
   <div>武器: ${weapon.name}</div>
   <div>HP: <span class="hp">${character.hp}</span> / ${character.maxHP}</div>
-  <div>SP: <span class="sp">${character.sp}</span> / ${character.maxSP}</div>
   <div>攻撃力: ${character.attack}</div>
   <div>防御力: ${character.defense}</div>
   <div>命中率: ${character.accuracy}</div>
@@ -232,10 +231,7 @@ function takeAction(character) {
 function takeTurn() {
   let activeCharacter = actionOrderObjects[turn];
   let activeOrderElement = orderOfActionDiv.getElementsByClassName('order')[turn];
-
-  // activeCharacterのsideに基づいて、SPを1増加させる
-  recoverSP(1, activeCharacter.side);
-
+  
   // Check if character is alive
   if (activeCharacter && activeCharacter.hp > 0) {
     // select strategy
@@ -275,6 +271,7 @@ function takeTurn() {
         } else {
           action = { name: '通常攻撃', type: 'damage' };
           target = enemies[Math.floor(Math.random() * enemies.length)];
+          recoverSP(1, activeCharacter.side);
         }
       } else {
         target = enemies[Math.floor(Math.random() * enemies.length)];
@@ -282,6 +279,7 @@ function takeTurn() {
     } else {
       action = { name: '通常攻撃', type: 'damage' };
       target = enemies[Math.floor(Math.random() * enemies.length)];
+      recoverSP(1, activeCharacter.side);
     }
 
     if (target) {
@@ -376,8 +374,9 @@ function attack(attacker, target) {
 
 // スキル使用関数
 
-function useSkill(user, target, skill) {
+function useSkill(user, target, action) {
   let hit;
+  let skill = skills.find(skill => skill.id === action.id);
   if (skill.type === 'healing') {
     hit = true; // 回復は必ずヒット
   } else {
@@ -427,10 +426,12 @@ function useSkill(user, target, skill) {
 
 
 
+
 // スキル定義
 let skills = [
   {
-    name: 'healing',
+    name: 'ヒール',
+    id: 'healing',
     type: 'healing',
     spCost: 3,
     effect: function (user, target) {
@@ -446,7 +447,8 @@ let skills = [
     }
   },
   {
-    name: 'fireball',
+    name: 'ファイヤーボール',
+    id: 'fireball',
     type: 'damage',
     spCost: 5,
     effect: function (user, target) {
