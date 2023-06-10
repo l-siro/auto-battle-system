@@ -1,9 +1,13 @@
+@charset "UTF-8";
+@import url("https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap");
 :root {
   font-size: 10px;
 }
 
 body {
   background: #ccc;
+  color: #333;
+  font-family: "Kaisei Opti", serif;
 }
 
 .app-display {
@@ -11,20 +15,35 @@ body {
   display: -ms-flexbox;
   display: flex;
   width: 100%;
-  height: 400px;
+  min-height: 360px;
+  height: calc(100vh - 155px);
+  margin-bottom: 20px;
 }
 
 #order-of-action {
+  padding: 20px;
   width: 20%;
   height: 100%;
-  background: #ddd;
   overflow: auto;
+}
+
+.order {
+  font-size: 1.4rem;
+  margin-bottom: 5px;
+  position: relative;
+}
+.order.active {
+  display: inline-block;
+  padding-left: 1em;
+  border-left: #ff8d8d solid 5px;
 }
 
 #battle-field {
   width: 80%;
   height: 100%;
-  background: #eee;
+  border-radius: 0 0 0 20px;
+  background: url("img/bg/bg1.png") no-repeat center center;
+  background-size: cover;
   position: relative;
   overflow: auto;
   display: -webkit-box;
@@ -39,22 +58,133 @@ body {
 .ally-side {
   width: 50%;
   padding: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 20px;
 }
 
 .character {
-  width: 100px;
+  width: 120px;
   background: #fff;
   border-radius: 5px;
-  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-          box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  position: relative;
+  -webkit-box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
+          box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  margin: 15px;
-  padding: 5px 5px 25px;
+  padding: 10px 15px;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
 }
 .character .strategy-select {
   width: 100%;
   font-size: 1rem;
+  margin-top: 10px;
+}
+.character .strategy-select option {
+  font-family: "Kaisei Opti", serif;
+}
+.character.attack {
+  position: relative;
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
+}
+.character.attack::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+.character.damage {
+  position: relative;
+}
+.character.damage::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(255, 0, 0, 0.3)));
+  background: linear-gradient(transparent, rgba(255, 0, 0, 0.3));
+}
+.character.damage .damage-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  padding-top: 70px;
+  font-size: 2.5rem;
+  color: #ff0000;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 4px #fff;
+  z-index: 1;
+}
+.character.recovery {
+  position: relative;
+}
+.character.recovery::after {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 255, 174, 0.3)));
+  background: linear-gradient(transparent, rgba(0, 255, 174, 0.3));
+}
+.character.recovery .recovery-text {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  padding-top: 70px;
+  font-size: 2.5rem;
+  color: #00a987;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 0.15em;
+  text-shadow: 0 0 4px #fff;
+  z-index: 1;
+}
+.character.miss {
+  position: relative;
+  -webkit-transform: translate(10px, 0);
+          transform: translate(10px, 0);
+}
+.character.miss::after {
+  content: "回避";
+  text-align: center;
+  font-size: 2.5rem;
+  padding-top: 70px;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: rgba(255, 255, 255, 0.3);
+}
+.character.defeated {
+  -webkit-filter: brightness(0.5) grayscale(1);
+          filter: brightness(0.5) grayscale(1);
+  opacity: 0.8;
+  -webkit-transform: scale(0.9);
+          transform: scale(0.9);
+}
+.character-box {
+  position: relative;
 }
 .character-name {
   font-size: 1.2rem;
@@ -70,6 +200,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
+  margin-bottom: 15px;
 }
 .character-hp-indicator, .character-sp-indicator {
   width: 100%;
@@ -79,15 +210,13 @@ body {
   -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
           box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
   display: block;
-  position: absolute;
-  bottom: 0;
-  left: 0;
 }
 .character-hp-indicator {
   bottom: 10px;
+  margin-bottom: 2px;
 }
 .character-hp-indicator::-webkit-progress-value {
-  background-color: #8dff8d;
+  background-color: #87c987;
 }
 .character-hp-indicator::-webkit-progress-bar {
   background-color: #ff8d8d;
@@ -101,7 +230,7 @@ body {
 
 .gui {
   width: 100%;
-  height: 80px;
+  height: 60px;
   font-size: 1.4rem;
   background: #ddd;
   padding: 10px;
@@ -110,17 +239,39 @@ body {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   gap: 30px;
 }
 
 #battle-log {
   width: 100%;
-  height: 100px;
-  background: #ccc;
+  height: 50px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 1em;
+  color: #999;
   overflow-y: scroll;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+#battle-log:hover {
+  height: 400px;
+}
+#battle-log div:first-child {
+  color: #ccc;
+}
+
+.battle-log {
+  height: 50px;
+  position: relative;
 }
 
 progress {
@@ -129,8 +280,52 @@ progress {
 
 input#upload {
   display: block;
+  font-family: "Kaisei Opti", serif;
 }
 
 #start-battle {
+  background: #eee;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  max-width: 240px;
+  padding: 10px 25px;
+  color: #313131;
+  -webkit-transition: 0.3s color ease-in-out;
+  transition: 0.3s color ease-in-out;
+  font-weight: 500;
+  z-index: 0;
+  border: 0;
+  border-left: solid 5px #6bb6ff;
+  font-family: "Kaisei Opti", serif;
+  cursor: pointer;
+}
+#start-battle:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
   display: block;
+  background: #6bb6ff;
+  -webkit-transition: 0.3s width ease-in-out;
+  transition: 0.3s width ease-in-out;
+  left: 0;
+}
+#start-battle:hover {
+  color: #FFF;
+}
+#start-battle:hover:before {
+  width: 100%;
+  z-index: -1;
+}
+
+.thanks {
+  padding: 0.5em;
 }

@@ -10,13 +10,11 @@
     "spirit": 50,
     "weakness": "light",
     "experience": 0,
-    "skills": [
-      "sword",
-      "shield"
-    ],
+    "skills": [],
     "items": [
       "potion"
-    ]
+    ],
+    "weapon": "shield"
   },
   {
     "side": "ally",
@@ -30,13 +28,14 @@
     "weakness": "water",
     "experience": 0,
     "skills": [
-      "magic",
+      "fireball",
       "healing"
     ],
     "items": [
       "potion",
       "elixir"
-    ]
+    ],
+    "weapon": "staff"
   },
   {
     "side": "ally",
@@ -49,14 +48,12 @@
     "spirit": 75,
     "weakness": "darkness",
     "experience": 0,
-    "skills": [
-      "archery",
-      "stealth"
-    ],
+    "skills": [],
     "items": [
       "potion",
       "smoke bomb"
-    ]
+    ],
+    "weapon": "sword"
   },
   {
     "side": "enemy",
@@ -69,13 +66,11 @@
     "spirit": 45,
     "weakness": "fire",
     "experience": 0,
-    "skills": [
-      "attack",
-      "run"
-    ],
+    "skills": [],
     "items": [
       "potion"
-    ]
+    ],
+    "weapon": "club"
   },
   {
     "side": "enemy",
@@ -88,13 +83,12 @@
     "spirit": 50,
     "weakness": "slashing",
     "experience": 0,
-    "skills": [
-      "attack",
-      "defend"
-    ],
+    "skills": [],
     "items": [
       "potion",
       "magic stone"
-    ]
+    ],
+    "weapon": "club"
   }
 ]
+

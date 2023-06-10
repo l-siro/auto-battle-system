@@ -1,0 +1,74 @@
+[
+  {
+    "name": "剣",
+    "id": "sword",
+    "attribute": "slashing",
+    "maxSP": 0,
+    "attack": 15,
+    "defense": 0,
+    "accuracy": 0,
+    "evasion": -5,
+    "speed": -10,
+    "shield": 0
+  },
+  {
+    "name": "弓",
+    "id": "bow",
+    "attribute": "piercing",
+    "maxSP": 0,
+    "attack": 10,
+    "defense": 0,
+    "accuracy": 10,
+    "evasion": 0,
+    "speed": -5,
+    "shield": 0
+  },
+  {
+    "name": "杖",
+    "id": "staff",
+    "attribute": "striking",
+    "maxSP": 20,
+    "attack": 5,
+    "defense": 0,
+    "accuracy": 0,
+    "evasion": 0,
+    "speed": 0,
+    "shield": 0
+  },
+  {
+    "name": "斧",
+    "id": "axe",
+    "attribute": "slashing",
+    "maxSP": 0,
+    "attack": 20,
+    "defense": 0,
+    "accuracy": -5,
+    "evasion": 0,
+    "speed": -15,
+    "shield": 0
+  },
+  {
+    "name": "大盾",
+    "id": "shield",
+    "attribute": "striking",
+    "maxSP": 0,
+    "attack": 2,
+    "defense": 20,
+    "accuracy": 0,
+    "evasion": 10,
+    "speed": -20,
+    "shield": 0
+  },
+  {
+    "name": "棍棒",
+    "id": "club",
+    "attribute": "striking",
+    "maxSP": 0,
+    "attack": 8,
+    "defense": 0,
+    "accuracy": 0,
+    "evasion": 10,
+    "speed": -10,
+    "shield": 0
+  }
+]
