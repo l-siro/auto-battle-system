@@ -59,16 +59,16 @@ body {
 #enemy-sp {
   width: 100%;
   height: 40px;
-  padding: 0 40px;
+  padding: 20px 40px 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  filter: drop-shadow(0 0 5px rgb(255, 255, 255));
   .sp-circle {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: rgb(255, 194, 88);
-    margin: 1px;
+    width: 24px;
+    height: 24px;
+    background: url('img/sp.png') no-repeat center center;
+    margin: 5px;
   }
 }
 .enemy-side,
