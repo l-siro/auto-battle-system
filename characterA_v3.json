@@ -66,7 +66,7 @@
     "spirit": 45,
     "weakness": "fire",
     "experience": 0,
-    "skills": [],
+    "skills": ["強攻撃"],
     "items": [
       "potion"
     ],
@@ -83,7 +83,7 @@
     "spirit": 50,
     "weakness": "slashing",
     "experience": 0,
-    "skills": [],
+    "skills": ["強攻撃"],
     "items": [
       "potion",
       "magic stone"

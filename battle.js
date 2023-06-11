@@ -391,7 +391,7 @@ function useSkill(user, target, action) {
     if (effectResult > 0) {
       let effectLogText;
       if (skill.type === 'damage') {
-        effectLogText = `${user.name}の${skill.name}が${target.name}に${effectResult}のダメージを与えた！`;
+        effectLogText = `${user.name}の${skill.name}！${target.name}に${effectResult}のダメージを与えた！`;
         applyDamageEffect(target);
       } else if (skill.type === 'healing') {
         effectLogText = `${user.name}の${skill.name}が${target.name}のHPを${effectResult}回復させた！`;
@@ -434,6 +434,7 @@ let skills = [
     id: 'healing',
     type: 'healing',
     spCost: 3,
+    // スキルの効果
     effect: function (user, target) {
       let healingAmount = user.spirit;
       if (target.hp + healingAmount > target.maxHP) {
@@ -442,7 +443,9 @@ let skills = [
       target.hp += healingAmount;
       return healingAmount;
     },
+    // スキル使用条件
     condition: function (user, target) {
+      // 回復対象がいるかどうか
       return sharedSP[user.side] >= this.spCost && target.hp < target.maxHP && target.side === user.side && target.hp > 0;
     }
   },
@@ -451,6 +454,7 @@ let skills = [
     id: 'fireball',
     type: 'damage',
     spCost: 5,
+    // スキルの効果
     effect: function (user, target) {
       let damage = user.intelligence * 2;
       if (target.weakness === 'fire') {
@@ -462,7 +466,28 @@ let skills = [
       target.hp -= damage;
       return damage;
     },
+    // スキル使用条件
     condition: function (user, target) {
+      // 通常攻撃と同じ条件
+      return sharedSP[user.side] >= this.spCost && target.hp > 0 && target.side !== user.side;
+    }
+  },
+  {
+    name: '強攻撃',
+    id: 'strong-attack',
+    type: 'damage',
+    spCost: 1,
+    // スキルの効果
+    effect: function (user, target) {
+      let damage = user.attack * 1.5;
+      if (target.hp - damage < 0) {
+        damage = target.hp;
+      }
+      target.hp -= damage;
+      return damage;
+    },
+    condition: function (user, target) {
+      // 通常攻撃と同じ条件
       return sharedSP[user.side] >= this.spCost && target.hp > 0 && target.side !== user.side;
     }
   }
