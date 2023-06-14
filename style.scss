@@ -14,15 +14,17 @@ body {
   display: flex;
   width: 100%;
   min-height: 360px;
-  height: calc(100vh - 155px);
-  margin-bottom: 20px;
+  height: calc(100vh - 85px);
+  padding-bottom: 20px;
+  align-items: flex-start;
 }
 
 #order-of-action {
-  padding: 20px;
+  padding: 0 0 20px;
   width: 20%;
-  height: 100%;
+  // height: 100%;
   overflow: auto;
+  position: relative;
 }
 
 .order {
@@ -35,13 +37,18 @@ body {
     border-left: #ff8d8d solid 5px;
   }
 }
-  
-#battle-field {
+.main {
   width: 80%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
   border-radius: 0 0 0 20px;
   background: url('img/bg/bg1.png') no-repeat center center;
   background-size: cover;
+  overflow: hidden;
+}
+#battle-field {
+  height: calc(100% - 50px);
   position: relative;
   overflow: auto;
   display: flex;
@@ -114,6 +121,7 @@ body {
     position: relative;
     transform: scale(0.98);
     transition: .2s;
+    animation: wink 0.35s linear infinite;
     &::after {
       content: '';
       width: 100%;
@@ -259,8 +267,10 @@ body {
   left: 0;
   z-index: 1;
   cursor: pointer;
+  backdrop-filter: blur(5px);
   &.open {
-    height: 400px;
+    height: 25vh;
+    font-size: 1.8rem;
   }
   div:first-child {
     color: #ccc;
@@ -321,4 +331,17 @@ input#upload {
 
 .thanks {
   padding: 0.5em;
+}
+
+// チカチカするアニメーション
+@keyframes wink {
+  0% {
+    filter: brightness(1) blur(0);
+  }
+  50% {
+    filter: brightness(.5) blur(3px);
+  }
+  100% {
+    filter: brightness(1) blur(0);
+  }
 }

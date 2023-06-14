@@ -16,15 +16,18 @@ body {
   display: flex;
   width: 100%;
   min-height: 360px;
-  height: calc(100vh - 155px);
-  margin-bottom: 20px;
+  height: calc(100vh - 85px);
+  padding-bottom: 20px;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
 }
 
 #order-of-action {
-  padding: 20px;
+  padding: 0 0 20px;
   width: 20%;
-  height: 100%;
   overflow: auto;
+  position: relative;
 }
 
 .order {
@@ -38,12 +41,24 @@ body {
   border-left: #ff8d8d solid 5px;
 }
 
-#battle-field {
+.main {
   width: 80%;
   height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
   border-radius: 0 0 0 20px;
   background: url("img/bg/bg1.png") no-repeat center center;
   background-size: cover;
+  overflow: hidden;
+}
+
+#battle-field {
+  height: calc(100% - 50px);
   position: relative;
   overflow: auto;
   display: -webkit-box;
@@ -152,6 +167,8 @@ body {
           transform: scale(0.98);
   -webkit-transition: 0.2s;
   transition: 0.2s;
+  -webkit-animation: wink 0.35s linear infinite;
+          animation: wink 0.35s linear infinite;
 }
 .character.damage::after {
   content: "";
@@ -309,9 +326,12 @@ body {
   left: 0;
   z-index: 1;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
 }
 #battle-log.open {
-  height: 400px;
+  height: 25vh;
+  font-size: 1.8rem;
 }
 #battle-log div:first-child {
   color: #ccc;
@@ -376,4 +396,34 @@ input#upload {
 
 .thanks {
   padding: 0.5em;
+}
+
+@-webkit-keyframes wink {
+  0% {
+    -webkit-filter: brightness(1) blur(0);
+            filter: brightness(1) blur(0);
+  }
+  50% {
+    -webkit-filter: brightness(0.5) blur(3px);
+            filter: brightness(0.5) blur(3px);
+  }
+  100% {
+    -webkit-filter: brightness(1) blur(0);
+            filter: brightness(1) blur(0);
+  }
+}
+
+@keyframes wink {
+  0% {
+    -webkit-filter: brightness(1) blur(0);
+            filter: brightness(1) blur(0);
+  }
+  50% {
+    -webkit-filter: brightness(0.5) blur(3px);
+            filter: brightness(0.5) blur(3px);
+  }
+  100% {
+    -webkit-filter: brightness(1) blur(0);
+            filter: brightness(1) blur(0);
+  }
 }

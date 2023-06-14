@@ -1,5 +1,5 @@
 // ターン時間を設定
-const turnTime = 1000;
+let turnTime = 1000;
 
 const uploadInput = document.getElementById('upload');
 const battleLogDiv = document.getElementById('battle-log');
@@ -135,18 +135,45 @@ function createCharacter(character) {
 }
 
 
-function sortCharactersBySpeed() {
-  let orderElements = Array.from(orderOfActionDiv.getElementsByClassName('order'));
-  orderElements.sort((a, b) => b.dataset.speed - a.dataset.speed);
+function createActionQueue(characters) {
+  // Sort characters by speed in descending order
+  characters.sort((a, b) => b.speed - a.speed);
 
+  let actionQueue = [];
+  let maxSpeed = Math.max(...characters.map(character => character.speed));
+
+  for (let i = 0; i < maxSpeed; i++) {
+    for (let character of characters) {
+      if (character.hp > 0 && i % Math.floor(maxSpeed / character.speed) === 0) {
+        actionQueue.push(character);
+      }
+    }
+  }
+
+  return actionQueue;
+}
+
+// ゲーム開始時にキューを作成
+let actionQueue = createActionQueue(characters);
+
+function updateOrderDisplay() {
+  // First, remove all elements
   while (orderOfActionDiv.firstChild) {
     orderOfActionDiv.removeChild(orderOfActionDiv.firstChild);
   }
 
-  for (let orderElement of orderElements) {
+  // Then, display all characters in the action queue
+  for (let i = turn; i < Math.min(turn + 10, actionQueue.length); i++) {
+    let character = actionQueue[i];
+    // Implement this part according to your actual UI
+    let orderElement = document.createElement('div');
+    orderElement.textContent = character.name;
     orderOfActionDiv.appendChild(orderElement);
   }
 }
+
+
+
 
 // JSON file upload handling
 document.getElementById('upload').addEventListener('change', function (e) {
@@ -169,7 +196,11 @@ document.getElementById('upload').addEventListener('change', function (e) {
       });
     }
 
-    sortCharactersBySpeed();
+    // Create the action queue and update the order display
+    actionQueue = createActionQueue(characters);
+    updateOrderDisplay();
+
+    // Get the action order objects
     actionOrderObjects = Array.from(orderOfActionDiv.children).map(ao => characters.find(c => c.name === ao.textContent));
   };
   reader.readAsText(file);
@@ -208,13 +239,13 @@ function updateSP(side) {
   }
 }
 
-// スキルを使ったときなど、SPが使われる処理
+// SPが使われる処理
 function useSP(amount, side) {
   sharedSP[side] -= amount;
   updateSP(side);  // 表示を更新
 }
 
-// 新たなターンが始まるときなど、SPが回復する処理
+// SPが回復する処理
 function recoverSP(amount, side) {
   sharedSP[side] += amount;
   updateSP(side);  // 表示を更新
@@ -224,14 +255,14 @@ function recoverSP(amount, side) {
 function takeAction(character) {
   // アクションを実行する（例：スキルを使う）
   useSP(5, character.side);  // sideは 'ally' または 'enemy'
+  updateOrderDisplay();
 }
-
 
 
 function takeTurn() {
   let activeCharacter = actionOrderObjects[turn];
   let activeOrderElement = orderOfActionDiv.getElementsByClassName('order')[turn];
-  
+
   // Check if character is alive
   if (activeCharacter && activeCharacter.hp > 0) {
     // select strategy
@@ -251,7 +282,7 @@ function takeTurn() {
         // allyの中で少なくとも1人が回復可能ならこのアクションは利用可能
         return allies.some(ally => ally.hp < ally.maxHP);
       } else {
-        // エネミーが1人でも生きていればこのアクションは利用可能
+        // エネミーが1人でも倒れていなければこのアクションは利用可能
         return enemies.length > 0;
       }
     });
@@ -288,8 +319,20 @@ function takeTurn() {
       } else {
         useSkill(activeCharacter, target, action);
       }
+      // Check if the target has been defeated after the attack or skill use
+      if (target.hp <= 0) {
+        checkDefeated(target);
+      }
     }
+  } else {
+    // If the character is defeated, skip to the next character
+    console.log(`${activeCharacter.name}は倒れているのでスキップ`);
+    processTurnEnd(activeOrderElement);
+    return;
   }
+
+  // Update the order of action display at the end of the turn
+  updateOrderDisplay();
 
   if (activeOrderElement) {
     setTimeout(() => {
@@ -298,6 +341,10 @@ function takeTurn() {
     activeOrderElement.classList.add('active');
   }
 
+  setTimeout(() => processTurnEnd(activeOrderElement), turnTime);
+}
+
+function processTurnEnd(activeOrderElement) {
   turn++;
   if (turn >= actionOrderObjects.length) {
     turn = 0;
@@ -308,23 +355,42 @@ function takeTurn() {
   let allies = characters.filter(c => c.side === 'ally' && c.hp > 0);
   let enemies = characters.filter(c => c.side === 'enemy' && c.hp > 0);
 
-  if (allies.length === 0 || enemies.length === 0) {
-    // battle over
+  // 勝利チームの判定
+  if (allies.length === 0) {
+    // 敵の勝利をログに出力
+    let logText = `敗北...`;
+    let logDiv = document.createElement('div');
+    logDiv.classList.add('enemy-win');
+    logDiv.textContent = logText;
+    battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+    return;
+  } else if (enemies.length === 0) {
+    // 味方の勝利
+    let logText = `勝利！`;
+    let logDiv = document.createElement('div');
+    logDiv.classList.add('ally-win');
+    logDiv.textContent = logText;
+    battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
     return;
   }
+
+  // Determine if the next character is defeated
+  let nextCharacter = actionOrderObjects[turn];
+  if (nextCharacter && nextCharacter.hp <= 0) {
+    console.log(`倒れている`)
+    setTimeout(takeTurn, 0);
+    return;
+  }
+
+  setTimeout(takeTurn, turnTime);
+  console.log(`ターンの終了　${phase}フェーズ`);
+}
+
 
   // if (turn === 0 && phase % 5 === 0 && phase > 0) {
   //   alert("5ターンが経過しました。作戦を再選択してください。");
   //   return;
   // }
-  setTimeout(takeTurn, turnTime);
-}
-
-
-
-
-
-
 
 // Hit rate calculation function
 function calculateHitRate(accuracy, evasion) {
@@ -367,7 +433,6 @@ function attack(attacker, target) {
     applyAttackEffect(attacker);
     applyMissEffect(target);
   }
-  checkDefeated(target);
 }
 
 
@@ -421,7 +486,6 @@ function useSkill(user, target, action) {
     applyAttackEffect(user);
     applyMissEffect(target);
   }
-  checkDefeated(target);
 }
 
 
@@ -499,15 +563,43 @@ for (let character of characters) {
 }
 
 
-
 function checkDefeated(character) {
   if (character.hp <= 0) {
+    character.hp = 0;
+
+    // Find the character in the action queue and remove them
+    let index = actionQueue.findIndex(c => c.name === character.name);
+    if (index !== -1) {
+      actionQueue.splice(index, 1);
+    }
+
+    // Similarly, remove from the orderOfActionDiv
+    let orderElement = Array.from(orderOfActionDiv.children).find(element => element.textContent === character.name);
+    if (orderElement) {
+      orderOfActionDiv.removeChild(orderElement);
+    }
+
+    // Add 'defeated' class to the character div
     let characterDiv = document.querySelector(`.character[data-name="${character.name}"]`);
     if (characterDiv) {
       characterDiv.classList.add('defeated');
     }
+
+    // Notify about the character's defeat
+    let logText = `${character.name}が倒れた！`;
+    let logDiv = document.createElement('div');
+    logDiv.textContent = logText;
+    battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+
+    // Recreate the action queue
+    actionQueue = createActionQueue(characters);
+
+    // Update order display
+    updateOrderDisplay();
   }
 }
+
+
 
 // status更新関数
 function updateStatus(character) {

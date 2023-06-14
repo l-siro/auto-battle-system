@@ -2,7 +2,7 @@
   {
     "side": "ally",
     "name": "アーサー",
-    "vitality": 70,
+    "vitality": 35,
     "strength": 65,
     "dexterity": 80,
     "agility": 70,
@@ -19,7 +19,7 @@
   {
     "side": "ally",
     "name": "クルト",
-    "vitality": 80,
+    "vitality": 40,
     "strength": 60,
     "dexterity": 65,
     "agility": 80,
@@ -40,7 +40,7 @@
   {
     "side": "ally",
     "name": "ヴァルター",
-    "vitality": 75,
+    "vitality": 32,
     "strength": 70,
     "dexterity": 65,
     "agility": 30,
@@ -58,7 +58,7 @@
   {
     "side": "enemy",
     "name": "ゴブリン",
-    "vitality": 60,
+    "vitality": 30,
     "strength": 50,
     "dexterity": 55,
     "agility": 65,
@@ -75,7 +75,7 @@
   {
     "side": "enemy",
     "name": "オーク",
-    "vitality": 80,
+    "vitality": 40,
     "strength": 70,
     "dexterity": 60,
     "agility": 65,
