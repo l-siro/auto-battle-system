@@ -10,11 +10,12 @@
     "spirit": 50,
     "weakness": "light",
     "experience": 0,
-    "skills": [],
+    "skills": ["鉄壁"],
     "items": [
       "potion"
     ],
-    "weapon": "shield"
+    "weapon": "shield",
+    "position": "frontline"
   },
   {
     "side": "ally",
@@ -35,7 +36,8 @@
       "potion",
       "elixir"
     ],
-    "weapon": "staff"
+    "weapon": "staff",
+    "position": "backline"
   },
   {
     "side": "ally",
@@ -53,7 +55,8 @@
       "potion",
       "smoke bomb"
     ],
-    "weapon": "sword"
+    "weapon": "sword",
+    "position": "frontline"
   },
   {
     "side": "enemy",
@@ -70,7 +73,8 @@
     "items": [
       "potion"
     ],
-    "weapon": "club"
+    "weapon": "club",
+    "position": "frontline"
   },
   {
     "side": "enemy",
@@ -83,12 +87,32 @@
     "spirit": 50,
     "weakness": "slashing",
     "experience": 0,
-    "skills": ["強攻撃"],
+    "skills": ["強攻撃","鉄壁"],
     "items": [
       "potion",
       "magic stone"
     ],
-    "weapon": "club"
+    "weapon": "club",
+    "position": "frontline"
+  },
+  {
+    "side": "enemy",
+    "name": "ゴブリンアーチャー",
+    "vitality": 20,
+    "strength": 40,
+    "dexterity": 60,
+    "agility": 65,
+    "intelligence": 45,
+    "spirit": 50,
+    "weakness": "fire",
+    "experience": 0,
+    "skills": [
+      "狙撃"
+    ],
+    "items": [
+    ],
+    "weapon": "bow",
+    "position": "backline"
   }
 ]
 

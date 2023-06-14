@@ -114,7 +114,7 @@ body {
 
 .enemy-side,
 .ally-side {
-  padding: 10px;
+  width: 80%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -127,6 +127,26 @@ body {
   gap: 20px;
   position: relative;
 }
+.enemy-side .backline,
+.enemy-side .frontline,
+.ally-side .backline,
+.ally-side .frontline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  width: 50%;
+  height: 100%;
+}
 
 .character {
   width: 120px;
@@ -134,10 +154,13 @@ body {
   border-radius: 5px;
   -webkit-box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
           box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
   padding: 10px 15px;
+  margin: 0 auto;
   -webkit-transition: 0.2s;
   transition: 0.2s;
+}
+.character:not(:last-child) {
+  margin-bottom: 15px;
 }
 .character .strategy-select {
   width: 100%;
@@ -290,6 +313,33 @@ body {
 }
 .character-sp-indicator::-webkit-progress-bar {
   background-color: #e5e5e5;
+}
+
+.status {
+  position: relative;
+}
+.status-inner {
+  line-height: 1.8;
+  visibility: hidden;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px);
+  color: #fff;
+  text-align: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: -60px;
+  left: 100%;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+.character:hover .status-inner {
+  visibility: visible;
+  opacity: 1;
 }
 
 .gui {

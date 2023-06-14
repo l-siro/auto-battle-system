@@ -80,12 +80,21 @@ body {
 }
 .enemy-side,
 .ally-side {
-  padding: 10px;
+  width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
   position: relative;
+  .backline,
+  .frontline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
+  }
 }
 
 .character {
@@ -93,9 +102,12 @@ body {
   background: #fff;
   border-radius: 5px;
   box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
-  overflow: hidden;
   padding: 10px 15px;
+  margin: 0 auto;
   transition: .2s;
+  &:not(:last-child) {
+    margin-bottom: 15px;
+  }
   .strategy-select {
     width: 100%;
     font-size: 1rem;
@@ -241,6 +253,32 @@ body {
     }
   }
 }
+
+.status {
+  position: relative;
+  &-inner {
+    line-height: 1.8;
+    visibility: hidden;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    bottom: -60px;
+    left: 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+    .character:hover & {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}
+
 .gui {
   width: 100%;
   height: 60px;

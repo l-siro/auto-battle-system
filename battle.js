@@ -1,5 +1,5 @@
 // ターン時間を設定
-let turnTime = 1000;
+let turnTime = 400;
 
 const uploadInput = document.getElementById('upload');
 const battleLogDiv = document.getElementById('battle-log');
@@ -15,6 +15,8 @@ let actionOrderObjects = [];
 let weaponData = [];
 
 
+
+
 // Load weapon data from JSON file
 fetch('./data/weapons.json')
   .then(response => response.json())
@@ -27,6 +29,16 @@ fetch('./data/weapons.json')
 function createCharacter(character) {
   // Get the weapon that the character is equipped with
   let weapon = weaponData.find(w => w.id === character.weapon);
+
+  // キャラクターのスキルを名前からオブジェクトに変換
+  character.skills = character.skills.map(skillName => {
+    let skill = skills.find(skill => skill.name === skillName);
+    if (!skill) {
+      console.warn(`Skill "${skillName}" not found!`);
+      return null;
+    }
+    return skill;
+  }).filter(skill => skill !== null);
 
   // initialize character stats
   character.hp = character.vitality * 10;
@@ -47,6 +59,10 @@ function createCharacter(character) {
     }
   });
 
+  // パッシブスキルを持っている場合、効果を適用
+  character.skills.filter(skill => skill.type === 'passive').forEach(skill => skill.effect(character));
+
+
   // 武器のステータスを反映
   if (weapon) {
     // Add the stats of the weapon to the character's stats
@@ -62,6 +78,75 @@ function createCharacter(character) {
   const characterDiv = document.createElement('div');
   characterDiv.classList.add('character');
   characterDiv.dataset.name = character.name;
+  characterDiv.dataset.position = character.position;
+
+  // ドラッグアンドドロップできるよう
+  characterDiv.setAttribute('draggable', 'true');
+  characterDiv.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', character.name);
+
+    // ゴースト画像のカスタマイズ
+    let clone = e.target.cloneNode(true);
+    clone.style.backgroundColor = "#fff";
+    clone.style.position = "absolute";
+    clone.style.top = "0";
+    clone.style.left = "-100%";
+    document.body.appendChild(clone);
+
+    // Get the size of the image
+    let rect = clone.getBoundingClientRect();
+
+    e.dataTransfer.setDragImage(clone, rect.width / 2, rect.height / 2);
+
+    setTimeout(() => {
+      document.body.removeChild(clone);
+    }, 0);
+  });
+
+  // ally-side and enemy-side drop event
+  for (let side of ['ally-side', 'enemy-side']) {
+    let sideElement = document.querySelector(`.${side}`);
+    sideElement.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+    });
+
+    sideElement.addEventListener('drop', (e) => {
+      e.preventDefault();
+
+      // dataTransferオブジェクトから文字名を取得する。
+      let characterName = e.dataTransfer.getData('text/plain');
+
+      // 文字オブジェクトを取得する
+      let character = characters.find(c => c.name === characterName);
+
+      // キャラクターのサイドを更新する
+      character.side = side === 'ally-side' ? 'ally' : 'enemy';
+
+      // 現在の親からキャラクターdivを削除する
+      let characterDiv = document.querySelector(`.character[data-name="${characterName}"]`);
+      characterDiv.parentNode.removeChild(characterDiv);
+
+      // 最も近いフロントラインまたはバックラインのdivを見つける
+      let positionDiv = e.target.closest('.frontline') || e.target.closest('.backline');
+
+      // 新しい位置に文字のdivを追加する
+      positionDiv.appendChild(characterDiv);
+
+      // キャラクターdivのクラスも更新する
+      characterDiv.classList.remove('ally', 'enemy');
+      characterDiv.classList.add(character.side);
+
+      // アクションキューを再作成する
+      actionQueue = createActionQueue(characters);
+
+      // オーダーディスプレイを更新する
+
+      // Update status
+      updateStatus(character);
+      updateOrderDisplay();
+    });
+  }
 
   // create a div for the box
   const boxDiv = document.createElement('div');
@@ -85,6 +170,11 @@ function createCharacter(character) {
   hpProgressBar.setAttribute('max', character.maxHP);
   hpProgressBar.setAttribute('value', character.hp);
   boxDiv.appendChild(hpProgressBar);
+  // create div for HP/maxHP
+  const hpDiv = document.createElement('div');
+  hpDiv.classList.add('hp');
+  hpDiv.innerHTML = `<span class="hp">${character.hp}</span> / ${character.maxHP}`;
+  boxDiv.appendChild(hpDiv);
 
   // create select box for strategy
   const selectStrategy = document.createElement('select');
@@ -104,9 +194,11 @@ function createCharacter(character) {
   // create div for character status
   const characterStatusDiv = document.createElement('div');
   characterStatusDiv.classList.add('status');
-  characterStatusDiv.innerHTML = `
+  const statusInnerDiv = document.createElement('div');
+  statusInnerDiv.classList.add('status-inner');
+  characterStatusDiv.appendChild(statusInnerDiv);
+  statusInnerDiv.innerHTML = `
   <div>武器: ${weapon.name}</div>
-  <div>HP: <span class="hp">${character.hp}</span> / ${character.maxHP}</div>
   <div>攻撃力: ${character.attack}</div>
   <div>防御力: ${character.defense}</div>
   <div>命中率: ${character.accuracy}</div>
@@ -115,15 +207,17 @@ function createCharacter(character) {
   <div>属性壁: ${character.shield}</div>
 `;
   characterDiv.appendChild(characterStatusDiv);
-
+  // console.log(character.position);
   if (character.side === 'ally') {
     characterDiv.classList.add('ally');
-    const allySideDiv = document.querySelector('.ally-side');
-    allySideDiv.appendChild(characterDiv);
+    // .ally-sideの中の同じcharacter.positionの要素に追加
+    let positionDiv = document.querySelector(`.ally-side .${character.position}`);
+    positionDiv.appendChild(characterDiv);
+    
   } else {
     characterDiv.classList.add('enemy');
-    const enemySideDiv = document.querySelector('.enemy-side');
-    enemySideDiv.appendChild(characterDiv);
+    let positionDiv = document.querySelector(`.enemy-side .${character.position}`);
+    positionDiv.appendChild(characterDiv);
   }
 
   // update the order of action div
@@ -133,7 +227,6 @@ function createCharacter(character) {
   orderElement.dataset.speed = character.speed;
   orderOfActionDiv.appendChild(orderElement);
 }
-
 
 function createActionQueue(characters) {
   // Sort characters by speed in descending order
@@ -174,6 +267,31 @@ function updateOrderDisplay() {
 
 
 
+// キャラクターのドラッグアンドドロップによるポジション変更
+let frontline = document.querySelector('.frontline');
+let backline = document.querySelector('.backline');
+
+[frontline, backline].forEach(position => {
+  position.addEventListener('dragover', (e) => {
+    e.preventDefault();
+  });
+
+  position.addEventListener('drop', (e) => {
+    e.preventDefault();
+    let name = e.dataTransfer.getData('text/plain');
+    let character = document.querySelector(`.character[data-name="${name}"]`);
+    character.dataset.position = position.classList.contains('frontline') ? 'frontline' : 'backline';
+    position.appendChild(character);
+
+    // Find the character object and update its position
+    let characterObj = characters.find(c => c.name === name);
+    if (characterObj) {
+      characterObj.position = character.dataset.position;
+    }
+  });
+});
+
+
 
 // JSON file upload handling
 document.getElementById('upload').addEventListener('change', function (e) {
@@ -183,18 +301,7 @@ document.getElementById('upload').addEventListener('change', function (e) {
     characters = JSON.parse(e.target.result);
     for (let character of characters) {
       createCharacter(character);
-    }
-
-    // convert character skills from names to objects
-    for (let character of characters) {
-      character.skills = character.skills.map(skillName => {
-        let skill = skills.find(skill => skill.name === skillName);
-        if (!skill) {
-          console.warn(`Skill "${skillName}" not found!`);
-        }
-        return skill;
-      });
-    }
+    }    
 
     // Create the action queue and update the order display
     actionQueue = createActionQueue(characters);
@@ -205,8 +312,6 @@ document.getElementById('upload').addEventListener('change', function (e) {
   };
   reader.readAsText(file);
 });
-
-
 
 
 let startBattleButton = document.getElementById('start-battle');
@@ -277,7 +382,7 @@ function takeTurn() {
     let target;
 
     // activeCharacterが利用可能なアクションを取得
-    let availableActions = activeCharacter.actions.filter(action => {
+    let availableSkills = activeCharacter.skills.filter(action => {
       if (action.type === 'healing') {
         // allyの中で少なくとも1人が回復可能ならこのアクションは利用可能
         return allies.some(ally => ally.hp < ally.maxHP);
@@ -287,31 +392,31 @@ function takeTurn() {
       }
     });
     // 共有SPが足りるアクションだけをフィルタリング
-    let affordableActions = availableActions.filter(a => a.spCost <= sharedSP[activeCharacter.side]);
+    let affordableActions = availableSkills.filter(a => a.spCost <= sharedSP[activeCharacter.side]);
 
 
+    
     if (affordableActions.length > 0) {
       action = affordableActions[Math.floor(Math.random() * affordableActions.length)];
-      // 必要なSPを共有SPから減算
       useSP(action.spCost, activeCharacter.side);
-
       if (action.type === 'healing') {
         let healableAllies = allies.filter(ally => ally.hp < ally.maxHP);
         if (healableAllies.length > 0) {
           target = healableAllies[Math.floor(Math.random() * healableAllies.length)];
         } else {
           action = { name: '通常攻撃', type: 'damage' };
-          target = enemies[Math.floor(Math.random() * enemies.length)];
+          target = selectTarget(activeCharacter, enemies, action);
           recoverSP(1, activeCharacter.side);
         }
       } else {
-        target = enemies[Math.floor(Math.random() * enemies.length)];
+        target = selectTarget(activeCharacter, enemies, action);
       }
     } else {
       action = { name: '通常攻撃', type: 'damage' };
-      target = enemies[Math.floor(Math.random() * enemies.length)];
+      target = selectTarget(activeCharacter, enemies, action);
       recoverSP(1, activeCharacter.side);
     }
+
 
     if (target) {
       if (action.name === '通常攻撃') {
@@ -377,7 +482,7 @@ function processTurnEnd(activeOrderElement) {
   // Determine if the next character is defeated
   let nextCharacter = actionOrderObjects[turn];
   if (nextCharacter && nextCharacter.hp <= 0) {
-    console.log(`倒れている`)
+    // 倒れているキャラクターのタイムセットをスキップ
     setTimeout(takeTurn, 0);
     return;
   }
@@ -392,7 +497,26 @@ function processTurnEnd(activeOrderElement) {
   //   return;
   // }
 
-// Hit rate calculation function
+
+// 攻撃対象を選択する関数
+function selectTarget(activeCharacter, enemies, action) {
+  let target;
+  let enemyFrontline = enemies.filter(enemy => enemy.position === 'frontline');
+
+  if (enemyFrontline.length > 0) {
+    if (!hasSnipeSkill(activeCharacter)) {
+      target = enemyFrontline[Math.floor(Math.random() * enemyFrontline.length)];
+    } else {
+      target = enemies[Math.floor(Math.random() * enemies.length)];
+    }
+  } else {
+    target = enemies[Math.floor(Math.random() * enemies.length)];
+  }
+
+  return target;
+}
+
+// 命中率計算関数
 function calculateHitRate(accuracy, evasion) {
   var diff = accuracy - evasion;
   var hitRate = 50;
@@ -402,7 +526,7 @@ function calculateHitRate(accuracy, evasion) {
   return hitRate;
 }
 
-// basic attack function
+// 通常攻撃関数
 function attack(attacker, target) {
   let hitRate = calculateHitRate(attacker.accuracy, target.evasion);
   let hit = Math.random() * 100 < hitRate;
@@ -434,8 +558,6 @@ function attack(attacker, target) {
     applyMissEffect(target);
   }
 }
-
-
 
 // スキル使用関数
 
@@ -554,13 +676,44 @@ let skills = [
       // 通常攻撃と同じ条件
       return sharedSP[user.side] >= this.spCost && target.hp > 0 && target.side !== user.side;
     }
+  },
+  {
+    name: '狙撃',
+    id: 'snipe',
+    type: 'passive',
+    effect: function (character) {
+      // 命中率を20%増加させる
+      character.accuracy *= 1.2;
+    },
+    condition: function (user, target) {
+      // 狙撃スキルの使用条件を定義
+      return true;
+    }
+  },
+  {
+    name: '鉄壁',
+    id: 'iron-wall',
+    type: 'passive',
+    // パッシブスキルの効果
+    effect: function (character) {
+      // 防御力を20%増加させる
+      character.defense *= 1.2;
+    },
+    // スキル使用条件（パッシブスキルの場合は特に条件を設定する必要がないかもしれません）
+    condition: function (character) {
+      return true;
+    }
   }
+
 ];
 
-// convert character skills from names to objects
-for (let character of characters) {
-  character.skills = character.skills.map(skillName => skills.find(skill => skill.name === skillName));
+// パッシブスキル名での判定処理
+function hasSnipeSkill(character) {
+  // スキル名が「狙撃」のスキルを探す
+  let snipeSkill = character.skills.find(skill => skill.name === '狙撃');
+  return snipeSkill !== undefined;
 }
+
 
 
 function checkDefeated(character) {
@@ -603,16 +756,30 @@ function checkDefeated(character) {
 
 // status更新関数
 function updateStatus(character) {
-  let statusDiv = document.querySelector(`.character[data-name="${character.name}"] .status`);
-  let hpElement = statusDiv.querySelector('.hp');
+  let characterElement = document.querySelector(`.character[data-name="${character.name}"]`);
 
+  // Update HP
+  let hpElement = characterElement.querySelector('.character .hp');
   hpElement.textContent = character.hp;
 
-  // add update to the indicators
-  let characterHPIndicator = document.querySelector(`.character[data-name="${character.name}"] .character-hp-indicator`);
-  characterHPIndicator.value = character.hp;
-}
+  let hpIndicatorElement = characterElement.querySelector('.character-hp-indicator');
+  hpIndicatorElement.value = character.hp;
 
+  // Update other status
+  let statusElement = characterElement.querySelector('.status-inner');
+
+  let weapon = weaponData.find(w => w.id === character.weapon);
+
+  statusElement.innerHTML = `
+    <div>武器: ${weapon.name}</div>
+    <div>攻撃力: ${character.attack}</div>
+    <div>防御力: ${character.defense}</div>
+    <div>命中率: ${character.accuracy}</div>
+    <div>回避率: ${character.evasion}</div>
+    <div>行動力: ${character.speed}</div>
+    <div>属性壁: ${character.shield}</div>
+  `;
+}
 
 
 // エフェクト関数

@@ -13,7 +13,7 @@
   {
     "name": "弓",
     "id": "bow",
-    "attribute": "piercing",
+    "attribute": "snipe",
     "attack": 10,
     "defense": 0,
     "accuracy": 10,
