@@ -21,15 +21,94 @@ body {
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
+  background: url("img/bg/bg1.png") no-repeat center center;
+  background-size: cover;
 }
 
 #order-of-action {
-  padding: 0 0 20px;
+  padding: 20px 20px 100px 0;
   width: 20%;
   overflow: auto;
   position: relative;
+  font-size: 1.6rem;
+  line-height: 2;
+  color: #fff;
+}
+#order-of-action div {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 10px;
+  -webkit-animation: sortUp 0.5s linear forwards;
+          animation: sortUp 0.5s linear forwards;
+  border-radius: 0 5px 5px 0;
+  background: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 17, 0.5)), to(transparent));
+  background: linear-gradient(-90deg, rgba(0, 0, 17, 0.5), transparent);
+  -webkit-box-shadow: 0 0 1.5px #fff;
+          box-shadow: 0 0 1.5px #fff;
+  border-right: #1c1c32 10px solid;
+}
+#order-of-action div:first-child {
+  -webkit-animation: join 0.5s linear forwards;
+          animation: join 0.5s linear forwards;
+}
+#order-of-action div:first-child::before {
+  content: "";
+  width: 100%;
+  height: 0.6em;
+  border-radius: 0;
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  background: -webkit-gradient(linear, left top, right top, from(#ff6e6e), to(transparent));
+  background: linear-gradient(90deg, #ff6e6e, transparent);
+  z-index: -1;
 }
 
+@-webkit-keyframes sortUp {
+  from {
+    -webkit-transform: translateY(42px);
+            transform: translateY(42px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+
+@keyframes sortUp {
+  from {
+    -webkit-transform: translateY(42px);
+            transform: translateY(42px);
+  }
+  to {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+@-webkit-keyframes join {
+  from {
+    opacity: 0.6;
+    -webkit-transform: translateY(42px);
+            transform: translateY(42px);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+@keyframes join {
+  from {
+    opacity: 0.6;
+    -webkit-transform: translateY(42px);
+            transform: translateY(42px);
+  }
+  to {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
 .order {
   font-size: 1.4rem;
   margin-bottom: 5px;
@@ -51,14 +130,10 @@ body {
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  border-radius: 0 0 0 20px;
-  background: url("img/bg/bg1.png") no-repeat center center;
-  background-size: cover;
-  overflow: hidden;
 }
 
 #battle-field {
-  height: calc(100% - 50px);
+  height: 75%;
   position: relative;
   overflow: auto;
   display: -webkit-box;
@@ -89,9 +164,6 @@ body {
 
 #ally-sp,
 #enemy-sp {
-  width: 100%;
-  height: 40px;
-  padding: 20px 40px 0;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -101,8 +173,21 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-filter: drop-shadow(0 0 5px white);
-          filter: drop-shadow(0 0 5px white);
+  height: 30px;
+  padding: 0 10px;
+  min-width: 150px;
+  position: absolute;
+  top: 10px;
+}
+#ally-sp::before,
+#enemy-sp::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  left: 0;
+  bottom: -20%;
 }
 #ally-sp .sp-circle,
 #enemy-sp .sp-circle {
@@ -110,11 +195,38 @@ body {
   height: 24px;
   background: url("img/sp.png") no-repeat center center;
   margin: 5px;
+  position: relative;
+  z-index: 1px;
+}
+
+#ally-sp {
+  left: 0;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+#ally-sp::before {
+  border-radius: 10px;
+  background: -webkit-gradient(linear, right top, left top, from(rgba(0, 0, 0, 0.6)), to(rgba(0, 0, 0, 0.2)));
+  background: linear-gradient(-90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+}
+
+#enemy-sp {
+  right: 0;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+#enemy-sp::before {
+  border-radius: 10px 0 0 10px;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 0, 0.6)), to(rgba(0, 0, 0, 0.2)));
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
 }
 
 .enemy-side,
 .ally-side {
-  width: 80%;
+  width: 100%;
+  height: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -124,7 +236,6 @@ body {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  gap: 20px;
   position: relative;
 }
 .enemy-side .backline,
@@ -156,8 +267,23 @@ body {
           box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
   padding: 10px 15px;
   margin: 0 auto;
-  -webkit-transition: 0.2s;
-  transition: 0.2s;
+  opacity: 1;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+.ally-side .character {
+  -webkit-transition-delay: 0.2s;
+          transition-delay: 0.2s;
+}
+.ally-side .character.join {
+  -webkit-transform: translate(-200px, 0) rotate(-90deg);
+          transform: translate(-200px, 0) rotate(-90deg);
+  opacity: 0;
+}
+.enemy-side .character.join {
+  -webkit-transform: translate(200px, 0) rotate(90deg);
+          transform: translate(200px, 0) rotate(90deg);
+  opacity: 0;
 }
 .character:not(:last-child) {
   margin-bottom: 15px;
@@ -321,7 +447,7 @@ body {
 .status-inner {
   line-height: 1.8;
   visibility: hidden;
-  width: 100%;
+  width: 160px;
   background: rgba(0, 0, 0, 0.5);
   -webkit-backdrop-filter: blur(5px);
           backdrop-filter: blur(5px);
@@ -337,38 +463,35 @@ body {
   -webkit-transition: opacity 0.3s;
   transition: opacity 0.3s;
 }
+.status-inner th,
+.status-inner td {
+  vertical-align: top;
+}
+.status-inner th {
+  text-align: right;
+  width: 40px;
+}
+.status-inner td {
+  -moz-text-align-last: left;
+       text-align-last: left;
+}
 .character:hover .status-inner {
   visibility: visible;
   opacity: 1;
 }
 
-.gui {
-  width: 100%;
-  height: 60px;
-  font-size: 1.4rem;
-  background: #ddd;
-  padding: 10px;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: end;
-      -ms-flex-align: end;
-          align-items: flex-end;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  gap: 30px;
-}
-
 #battle-log {
   width: 100%;
-  height: 50px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 1em;
+  font-size: 1.8rem;
+  height: 100%;
+  background: -webkit-gradient(linear, left top, right top, from(rgba(0, 0, 17, 0.8)), to(rgba(0, 0, 17, 0.5)));
+  background: linear-gradient(90deg, rgba(0, 0, 17, 0.8), rgba(0, 0, 17, 0.5));
+  -webkit-box-shadow: 0 0 1.5px #fff;
+          box-shadow: 0 0 1.5px #fff;
   color: #999;
   overflow-y: scroll;
+  padding: 10px 20px 0;
+  border-radius: 10px 0 0 10px;
   -webkit-transition: 0.2s;
   transition: 0.2s;
   position: absolute;
@@ -380,18 +503,47 @@ body {
           backdrop-filter: blur(5px);
 }
 #battle-log.open {
-  height: 25vh;
-  font-size: 1.8rem;
+  height: calc(100vh - 125px);
+}
+#battle-log div {
+  -webkit-animation: logIn 0.5s linear forwards;
+          animation: logIn 0.5s linear forwards;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
 }
 #battle-log div:first-child {
   color: #ccc;
 }
 
 .battle-log {
-  height: 50px;
+  height: 25%;
   position: relative;
 }
 
+@-webkit-keyframes logIn {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 200px;
+  }
+}
+
+@keyframes logIn {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 200px;
+  }
+}
 progress {
   display: block;
 }
@@ -445,7 +597,7 @@ input#upload {
 }
 
 .thanks {
-  padding: 0.5em;
+  padding: 0.5em 2em;
 }
 
 @-webkit-keyframes wink {
@@ -476,4 +628,23 @@ input#upload {
     -webkit-filter: brightness(1) blur(0);
             filter: brightness(1) blur(0);
   }
+}
+.gui {
+  width: 100%;
+  height: 60px;
+  font-size: 1.4rem;
+  background: #ddd;
+  padding: 10px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+      -ms-flex-align: end;
+          align-items: flex-end;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  gap: 30px;
 }

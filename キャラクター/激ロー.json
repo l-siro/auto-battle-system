@@ -45,12 +45,15 @@
     "vitality": 32,
     "strength": 70,
     "dexterity": 65,
-    "agility": 30,
+    "agility": 50,
     "intelligence": 60,
     "spirit": 75,
     "weakness": "darkness",
     "experience": 0,
-    "skills": [],
+    "skills": [
+      "強攻撃",
+      "連撃"
+    ],
     "items": [
       "potion",
       "smoke bomb"

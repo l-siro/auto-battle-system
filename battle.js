@@ -1,5 +1,5 @@
 // ターン時間を設定
-let turnTime = 400;
+let turnTime = 1000;
 
 const uploadInput = document.getElementById('upload');
 const battleLogDiv = document.getElementById('battle-log');
@@ -77,6 +77,8 @@ function createCharacter(character) {
   // create div for character
   const characterDiv = document.createElement('div');
   characterDiv.classList.add('character');
+  // 登場時のアニメーション用のクラスを追加
+  characterDiv.classList.add('join');
   characterDiv.dataset.name = character.name;
   characterDiv.dataset.position = character.position;
 
@@ -140,12 +142,19 @@ function createCharacter(character) {
       // アクションキューを再作成する
       actionQueue = createActionQueue(characters);
 
-      // オーダーディスプレイを更新する
-
-      // Update status
+      // ステータス更新
       updateStatus(character);
+
+      // オーダーディスプレイを更新する
       updateOrderDisplay();
     });
+
+    // .2s後に全てのキャラクターの.joinクラスを削除する
+    setTimeout(() => {
+      document.querySelectorAll('.character').forEach(character => {
+        character.classList.remove('join');
+      });
+    }, 200);
   }
 
   // create a div for the box
@@ -197,15 +206,7 @@ function createCharacter(character) {
   const statusInnerDiv = document.createElement('div');
   statusInnerDiv.classList.add('status-inner');
   characterStatusDiv.appendChild(statusInnerDiv);
-  statusInnerDiv.innerHTML = `
-  <div>武器: ${weapon.name}</div>
-  <div>攻撃力: ${character.attack}</div>
-  <div>防御力: ${character.defense}</div>
-  <div>命中率: ${character.accuracy}</div>
-  <div>回避率: ${character.evasion}</div>
-  <div>行動力: ${character.speed}</div>
-  <div>属性壁: ${character.shield}</div>
-`;
+  
   characterDiv.appendChild(characterStatusDiv);
   // console.log(character.position);
   if (character.side === 'ally') {
@@ -226,6 +227,8 @@ function createCharacter(character) {
   orderElement.classList.add('order');
   orderElement.dataset.speed = character.speed;
   orderOfActionDiv.appendChild(orderElement);
+
+  updateStatus(character);
 }
 
 function createActionQueue(characters) {
@@ -250,13 +253,13 @@ function createActionQueue(characters) {
 let actionQueue = createActionQueue(characters);
 
 function updateOrderDisplay() {
-  // First, remove all elements
+  // 最初にオーダーディスプレイをクリア
   while (orderOfActionDiv.firstChild) {
     orderOfActionDiv.removeChild(orderOfActionDiv.firstChild);
   }
 
-  // Then, display all characters in the action queue
-  for (let i = turn; i < Math.min(turn + 10, actionQueue.length); i++) {
+  // 次に、アクションキューの最初の10人を表示
+  for (let i = turn; i < Math.min(turn + 12, actionQueue.length); i++) {
     let character = actionQueue[i];
     // Implement this part according to your actual UI
     let orderElement = document.createElement('div');
@@ -622,7 +625,7 @@ let skills = [
     spCost: 3,
     // スキルの効果
     effect: function (user, target) {
-      let healingAmount = user.spirit;
+      let healingAmount = user.spirit * 3;
       if (target.hp + healingAmount > target.maxHP) {
         healingAmount = target.maxHP - target.hp;
       }
@@ -644,6 +647,11 @@ let skills = [
     effect: function (user, target) {
       let damage = user.intelligence * 2;
       if (target.weakness === 'fire') {
+        // 通知ログを出力
+        let logText = `${target.name}は炎に弱い！`;
+        let logDiv = document.createElement('div');
+        logDiv.textContent = logText;
+        battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
         damage *= 2;
       }
       if (target.hp - damage < 0) {
@@ -666,6 +674,25 @@ let skills = [
     // スキルの効果
     effect: function (user, target) {
       let damage = user.attack * 1.5;
+      if (target.hp - damage < 0) {
+        damage = target.hp;
+      }
+      target.hp -= damage;
+      return damage;
+    },
+    condition: function (user, target) {
+      // 通常攻撃と同じ条件
+      return sharedSP[user.side] >= this.spCost && target.hp > 0 && target.side !== user.side;
+    }
+  },
+  {
+    name: '連撃',
+    id: 'double-attack',
+    type: 'damage',
+    spCost: 2,
+    // スキルの効果
+    effect: function (user, target) {
+      let damage = user.attack * 3;
       if (target.hp - damage < 0) {
         damage = target.hp;
       }
@@ -759,7 +786,7 @@ function updateStatus(character) {
   let characterElement = document.querySelector(`.character[data-name="${character.name}"]`);
 
   // Update HP
-  let hpElement = characterElement.querySelector('.character .hp');
+  let hpElement = characterElement.querySelector('.character .hp .hp');
   hpElement.textContent = character.hp;
 
   let hpIndicatorElement = characterElement.querySelector('.character-hp-indicator');
@@ -771,13 +798,16 @@ function updateStatus(character) {
   let weapon = weaponData.find(w => w.id === character.weapon);
 
   statusElement.innerHTML = `
-    <div>武器: ${weapon.name}</div>
-    <div>攻撃力: ${character.attack}</div>
-    <div>防御力: ${character.defense}</div>
-    <div>命中率: ${character.accuracy}</div>
-    <div>回避率: ${character.evasion}</div>
-    <div>行動力: ${character.speed}</div>
-    <div>属性壁: ${character.shield}</div>
+  <table>
+    <tr><th>武器 :</th> <td>${weapon.name}</td></tr>
+    <tr><th>攻撃力 :</th> <td>${character.attack}</td></tr>
+    <tr><th>防御力 :</th> <td>${character.defense}</td></tr>
+    <tr><th>命中率 :</th> <td>${character.accuracy}</td></tr>
+    <tr><th>回避率 :</th> <td>${character.evasion}</td></tr>
+    <tr><th>行動力 :</th> <td>${character.speed}</td></tr>
+    <tr><th>属性壁 :</th> <td>${character.shield}</td></tr>
+    <tr><th>スキル :</th> <td>${character.skills.map(skill => skill.name).join('<br>')}</td></tr>
+  </table>
   `;
 }
 

@@ -17,14 +17,63 @@ body {
   height: calc(100vh - 85px);
   padding-bottom: 20px;
   align-items: flex-start;
+  background: url("img/bg/bg1.png") no-repeat center center;
+  background-size: cover;
 }
 
 #order-of-action {
-  padding: 0 0 20px;
+  padding: 20px 20px 100px 0;
   width: 20%;
   // height: 100%;
   overflow: auto;
   position: relative;
+  font-size: 1.6rem;
+  line-height: 2;
+  color: #fff;
+  div {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    animation: sortUp 0.5s linear forwards;
+    border-radius: 0 5px 5px 0;
+    background: linear-gradient(-90deg, rgba(0, 0, 17, 0.5), transparent);
+    box-shadow: 0 0 1.5px #fff;
+    border-right: #1c1c32 10px solid;
+    &:first-child {
+      animation: join 0.5s linear forwards;
+      &::before {
+        content: "";
+        width: 100%;
+        height: 0.6em;
+        border-radius: 0;
+        position: absolute;
+        left: 0;
+        bottom: -.2em;
+        background: linear-gradient(90deg, rgb(255, 110, 110), transparent);
+        z-index: -1;
+      }
+    }
+  }
+}
+
+@keyframes sortUp {
+  from {
+    transform: translateY(42px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes join {
+  from {
+    opacity: 0.6;
+    transform: translateY(42px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .order {
@@ -42,13 +91,9 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 0 0 0 20px;
-  background: url('img/bg/bg1.png') no-repeat center center;
-  background-size: cover;
-  overflow: hidden;
 }
 #battle-field {
-  height: calc(100% - 50px);
+  height: 75%;
   position: relative;
   overflow: auto;
   display: flex;
@@ -64,27 +109,55 @@ body {
 }
 #ally-sp,
 #enemy-sp {
-  width: 100%;
-  height: 40px;
-  padding: 20px 40px 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  filter: drop-shadow(0 0 5px rgb(255, 255, 255));
+  height: 30px;
+  padding: 0 10px;
+  min-width: 150px;
+  position: absolute;
+  top: 10px;
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 20px;
+    position: absolute;
+    left: 0;
+    bottom: -20%;
+  }
   .sp-circle {
     width: 24px;
     height: 24px;
     background: url('img/sp.png') no-repeat center center;
     margin: 5px;
+    position: relative;
+    z-index: 1px;
+  }
+}
+#ally-sp {
+  left: 0;
+  justify-content: flex-start;
+  &::before {
+    border-radius: 10px;
+    background: linear-gradient(-90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+  }
+}
+#enemy-sp {
+  right: 0;
+  justify-content: flex-end;
+  &::before {
+    border-radius: 10px 0 0 10px;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
   }
 }
 .enemy-side,
 .ally-side {
-  width: 80%;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
   position: relative;
   .backline,
   .frontline {
@@ -104,7 +177,21 @@ body {
   box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
   padding: 10px 15px;
   margin: 0 auto;
-  transition: .2s;
+  opacity: 1;
+  transition: .4s;
+  .ally-side & {
+    transition-delay: .2s;
+    &.join {
+      transform: translate(-200px, 0) rotate(-90deg);
+      opacity: 0;
+    }
+  }
+  .enemy-side & {
+    &.join {
+      transform: translate(200px, 0) rotate(90deg);
+      opacity: 0;
+    }
+  }
   &:not(:last-child) {
     margin-bottom: 15px;
   }
@@ -259,7 +346,7 @@ body {
   &-inner {
     line-height: 1.8;
     visibility: hidden;
-    width: 100%;
+    width: 160px;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     color: #fff;
@@ -272,6 +359,17 @@ body {
     left: 100%;
     opacity: 0;
     transition: opacity 0.3s;
+    th,
+    td {
+      vertical-align: top;
+    }
+    th {
+      text-align: right;
+      width: 40px;
+    }
+    td {
+      text-align-last: left;
+    }
     .character:hover & {
       visibility: visible;
       opacity: 1;
@@ -279,26 +377,17 @@ body {
   }
 }
 
-.gui {
-  width: 100%;
-  height: 60px;
-  font-size: 1.4rem;
-  background: #ddd;
-  padding: 10px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 30px;
-}
 
 #battle-log {
   width: 100%;
-  height: 50px;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 1em;
+  font-size: 1.8rem;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0, 0, 17, 0.8), rgba(0, 0, 17, 0.5));
+  box-shadow: 0 0 1.5px #fff;
   color: #999;
   overflow-y: scroll;
+  padding: 10px 20px 0;
+  border-radius: 10px 0 0 10px;
   transition: .2s;
   position: absolute;
   bottom: 0;
@@ -307,18 +396,31 @@ body {
   cursor: pointer;
   backdrop-filter: blur(5px);
   &.open {
-    height: 25vh;
-    font-size: 1.8rem;
+    height: calc(100vh - 125px);
+  }
+  div {
+    animation: logIn 0.5s linear forwards;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
   }
   div:first-child {
     color: #ccc;
   }
 }
 .battle-log {
-  height: 50px;
+  height: 25%;
   position: relative;
 }
 
+@keyframes logIn {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 200px;
+  }
+}
 
 progress {
   display: block;
@@ -368,7 +470,7 @@ input#upload {
 }
 
 .thanks {
-  padding: 0.5em;
+  padding: 0.5em 2em;
 }
 
 // チカチカするアニメーション
@@ -382,4 +484,18 @@ input#upload {
   100% {
     filter: brightness(1) blur(0);
   }
+}
+
+
+.gui {
+  width: 100%;
+  height: 60px;
+  font-size: 1.4rem;
+  background: #ddd;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 30px;
 }
