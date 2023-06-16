@@ -602,6 +602,7 @@ function attack(attacker, target) {
     // log attack
     let logText = `${attacker.name}が${target.name}に${damage}のダメージを与えた！`;
     let logDiv = document.createElement('div');
+    logDiv.classList.add(attacker.side);
     logDiv.textContent = logText;
     battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
     applyAttackEffect(attacker);
@@ -611,6 +612,7 @@ function attack(attacker, target) {
     // log miss
     let logText = `${attacker.name}は${target.name}への攻撃を外した！`;
     let logDiv = document.createElement('div');
+    logDiv.classList.add(attacker.side);
     logDiv.textContent = logText;
     battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
     applyAttackEffect(attacker);
@@ -647,10 +649,13 @@ function useSkill(user, target, action) {
       // スキル使用ログをここに移動
       let logText = `${user.name}が${target.name}に対して${skill.name}を使用！`;
       let logDiv = document.createElement('div');
+      logDiv.classList.add(user.side);
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
 
       let effectLogDiv = document.createElement('div');
+      effectLogDiv.classList.add('effect');
+      effectLogDiv.classList.add(user.side);
       effectLogDiv.textContent = effectLogText;
       battleLogDiv.insertBefore(effectLogDiv, battleLogDiv.firstChild);
     }
@@ -662,6 +667,7 @@ function useSkill(user, target, action) {
     // ログミス
     let logText = `${user.name}は${target.name}への${skill.name}を外した！`;
     let logDiv = document.createElement('div');
+    logDiv.classList.add(user.side);
     logDiv.textContent = logText;
     battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
     applyAttackEffect(user);
