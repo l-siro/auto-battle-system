@@ -32,6 +32,9 @@ enemyClearButton.addEventListener('click', function () {
   characters = characters.filter(c => c.side === 'ally');
   actionQueue = createActionQueue(characters);
   updateOrderDisplay();
+  // 敵のスキルポイントをリセット
+  sharedSP.enemy = 0;
+  updateSP('enemy');
 });
 
 // HPを全回復するボタン
