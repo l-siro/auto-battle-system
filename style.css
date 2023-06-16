@@ -21,7 +21,9 @@ body {
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
-  background: url("img/bg/bg1.png") no-repeat center center;
+  background-image: url("img/bg/bg1.png");
+  background-repeat: no-repeat;
+  background-position: center;
   background-size: cover;
 }
 
@@ -34,7 +36,7 @@ body {
   line-height: 2;
   color: #fff;
 }
-#order-of-action div {
+#order-of-action .order {
   position: relative;
   padding-left: 20px;
   margin-bottom: 10px;
@@ -47,27 +49,21 @@ body {
           box-shadow: 0 0 1.5px #fff;
   border-right: #1c1c32 10px solid;
 }
-#order-of-action div:first-child {
-  -webkit-animation: join 0.5s linear forwards;
-          animation: join 0.5s linear forwards;
+#order-of-action .order.enemy {
+  border-right: #691e1e 10px solid;
 }
-#order-of-action div:first-child::before {
-  content: "";
-  width: 100%;
-  height: 0.6em;
-  border-radius: 0;
-  position: absolute;
-  left: 0;
-  bottom: -0.2em;
-  background: -webkit-gradient(linear, left top, right top, from(#ff6e6e), to(transparent));
-  background: linear-gradient(90deg, #ff6e6e, transparent);
-  z-index: -1;
+#order-of-action .order.ally {
+  border-right: #1e4669 10px solid;
+}
+#order-of-action .order:first-child {
+  background: -webkit-gradient(linear, right top, left top, from(rgba(52, 0, 6, 0.5)), to(transparent));
+  background: linear-gradient(-90deg, rgba(52, 0, 6, 0.5), transparent);
 }
 
 @-webkit-keyframes sortUp {
   from {
-    -webkit-transform: translateY(42px);
-            transform: translateY(42px);
+    -webkit-transform: translateY(38px);
+            transform: translateY(38px);
   }
   to {
     -webkit-transform: translateY(0);
@@ -77,8 +73,8 @@ body {
 
 @keyframes sortUp {
   from {
-    -webkit-transform: translateY(42px);
-            transform: translateY(42px);
+    -webkit-transform: translateY(38px);
+            transform: translateY(38px);
   }
   to {
     -webkit-transform: translateY(0);
@@ -270,6 +266,10 @@ body {
   opacity: 1;
   -webkit-transition: 0.4s;
   transition: 0.4s;
+  background-image: url("img/card-bg.png");
+  background-position: right bottom;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 .ally-side .character {
   -webkit-transition-delay: 0.2s;

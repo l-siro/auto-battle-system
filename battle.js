@@ -1,5 +1,60 @@
+
+// 背景設定
+document.addEventListener("DOMContentLoaded", function () {
+  var imageUpload = document.getElementById("bg-upload");
+  var backgroundImage = document.getElementById("background-image");
+
+  imageUpload.addEventListener("change", function (e) {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      backgroundImage.style.backgroundImage =
+        "url(" + e.target.result + ")";
+    };
+
+    reader.readAsDataURL(file);
+  });
+});
+
+
+// 敵のクリアボタン
+let enemyClearButton = document.getElementById('enemy-clear-button');
+enemyClearButton.addEventListener('click', function () {
+  let enemySideFront = document.querySelector('.enemy-side .frontline');
+  let enemySideBack = document.querySelector('.enemy-side .backline');
+  while (enemySideFront.firstChild) {
+    enemySideFront.removeChild(enemySideFront.firstChild);
+  }
+  while (enemySideBack.firstChild) {
+    enemySideBack.removeChild(enemySideBack.firstChild);
+  }
+  characters = characters.filter(c => c.side === 'ally');
+  actionQueue = createActionQueue(characters);
+  updateOrderDisplay();
+});
+
+// HPを全回復するボタン
+let hpRecoverButton = document.getElementById('hp-recover-button');
+hpRecoverButton.addEventListener('click', function () {
+  characters.forEach(c => {
+    c.hp = c.maxHP;
+    let characterDiv = document.querySelector(`.character[data-name="${c.name}"]`);
+    characterDiv.classList.remove('defeated');
+
+    // アクションキューを再作成する
+    actionQueue = createActionQueue(characters);
+    updateOrderDisplay();
+    updateStatus(c);
+  });
+});
+
+
+
+
+
 // ターン時間を設定
-let turnTime = 1000;
+let turnTime = 400;
 
 const uploadInput = document.getElementById('upload');
 const battleLogDiv = document.getElementById('battle-log');
@@ -15,8 +70,6 @@ let actionOrderObjects = [];
 let weaponData = [];
 
 
-
-
 // Load weapon data from JSON file
 fetch('./data/weapons.json')
   .then(response => response.json())
@@ -27,7 +80,7 @@ fetch('./data/weapons.json')
 
 
 function createCharacter(character) {
-  // Get the weapon that the character is equipped with
+  // キャラクターの武器を名前からオブジェクトに変換
   let weapon = weaponData.find(w => w.id === character.weapon);
 
   // キャラクターのスキルを名前からオブジェクトに変換
@@ -74,7 +127,7 @@ function createCharacter(character) {
   }
 
 
-  // create div for character
+  // キャラクターを追加
   const characterDiv = document.createElement('div');
   characterDiv.classList.add('character');
   // 登場時のアニメーション用のクラスを追加
@@ -94,18 +147,15 @@ function createCharacter(character) {
     clone.style.top = "0";
     clone.style.left = "-100%";
     document.body.appendChild(clone);
-
-    // Get the size of the image
+    // ゴースト画像の位置を調整
     let rect = clone.getBoundingClientRect();
-
     e.dataTransfer.setDragImage(clone, rect.width / 2, rect.height / 2);
-
     setTimeout(() => {
       document.body.removeChild(clone);
     }, 0);
   });
 
-  // ally-side and enemy-side drop event
+  // キャラクターのサイドを更新する
   for (let side of ['ally-side', 'enemy-side']) {
     let sideElement = document.querySelector(`.${side}`);
     sideElement.addEventListener('dragover', (e) => {
@@ -221,20 +271,14 @@ function createCharacter(character) {
     positionDiv.appendChild(characterDiv);
   }
 
-  // update the order of action div
-  const orderElement = document.createElement('div');
-  orderElement.textContent = character.name;
-  orderElement.classList.add('order');
-  orderElement.dataset.speed = character.speed;
-  orderOfActionDiv.appendChild(orderElement);
-
   updateStatus(character);
 }
 
 function createActionQueue(characters) {
-  // Sort characters by speed in descending order
+  // 速度の降順でキャラクターをソート
   characters.sort((a, b) => b.speed - a.speed);
 
+  // キャラクターの配列をループして、アクションキューを作成
   let actionQueue = [];
   let maxSpeed = Math.max(...characters.map(character => character.speed));
 
@@ -263,6 +307,13 @@ function updateOrderDisplay() {
     let character = actionQueue[i];
     // Implement this part according to your actual UI
     let orderElement = document.createElement('div');
+    if (character.side === 'ally') {
+      orderElement.classList.add('ally');
+    }
+    if (character.side === 'enemy') {
+      orderElement.classList.add('enemy');
+    }
+    orderElement.classList.add('order');
     orderElement.textContent = character.name;
     orderOfActionDiv.appendChild(orderElement);
   }
@@ -301,11 +352,16 @@ document.getElementById('upload').addEventListener('change', function (e) {
   let file = e.target.files[0];
   let reader = new FileReader();
   reader.onload = function (e) {
-    characters = JSON.parse(e.target.result);
-    for (let character of characters) {
-      createCharacter(character);
-    }    
+    // charactersにJSONファイルの内容をマージ
+    characters = characters.concat(JSON.parse(e.target.result));
 
+    // 差分キャラクターを作成
+    let newCharacters = characters.filter(c => !document.querySelector(`.character[data-name="${c.name}"]`));
+    newCharacters.forEach(createCharacter);
+
+
+    console.log(characters);
+    
     // Create the action queue and update the order display
     actionQueue = createActionQueue(characters);
     updateOrderDisplay();
@@ -869,7 +925,6 @@ function applyRecoveryEffect(character, recoveryAmount) {
     characterDiv.removeChild(recoveryDiv);
   }, 500); // Remove the recovery effect after 500ms
 }
-
 
 
 // バトルログ表示

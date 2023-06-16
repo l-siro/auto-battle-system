@@ -1,0 +1,59 @@
+[
+  {
+    "side": "enemy",
+    "name": "ゴブリン",
+    "vitality": 30,
+    "strength": 50,
+    "dexterity": 55,
+    "agility": 65,
+    "intelligence": 40,
+    "spirit": 45,
+    "weakness": "fire",
+    "experience": 0,
+    "skills": ["強攻撃"],
+    "items": [
+      "potion"
+    ],
+    "weapon": "club",
+    "position": "frontline"
+  },
+  {
+    "side": "enemy",
+    "name": "オーク",
+    "vitality": 40,
+    "strength": 70,
+    "dexterity": 60,
+    "agility": 65,
+    "intelligence": 45,
+    "spirit": 50,
+    "weakness": "slashing",
+    "experience": 0,
+    "skills": ["強攻撃","鉄壁"],
+    "items": [
+      "potion",
+      "magic stone"
+    ],
+    "weapon": "club",
+    "position": "frontline"
+  },
+  {
+    "side": "enemy",
+    "name": "ゴブリンアーチャー",
+    "vitality": 20,
+    "strength": 40,
+    "dexterity": 60,
+    "agility": 65,
+    "intelligence": 45,
+    "spirit": 50,
+    "weakness": "fire",
+    "experience": 0,
+    "skills": [
+      "狙撃"
+    ],
+    "items": [
+    ],
+    "weapon": "bow",
+    "position": "backline"
+  }
+]
+

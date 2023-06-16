@@ -1,0 +1,65 @@
+[
+  {
+    "side": "ally",
+    "name": "アーサー",
+    "vitality": 35,
+    "strength": 65,
+    "dexterity": 80,
+    "agility": 70,
+    "intelligence": 60,
+    "spirit": 50,
+    "weakness": "light",
+    "experience": 0,
+    "skills": ["鉄壁"],
+    "items": [
+      "potion"
+    ],
+    "weapon": "shield",
+    "position": "frontline"
+  },
+  {
+    "side": "ally",
+    "name": "クルト",
+    "vitality": 40,
+    "strength": 60,
+    "dexterity": 65,
+    "agility": 80,
+    "intelligence": 75,
+    "spirit": 60,
+    "weakness": "water",
+    "experience": 0,
+    "skills": [
+      "ヒール",
+      "ファイヤーボール"
+    ],
+    "items": [
+      "potion",
+      "elixir"
+    ],
+    "weapon": "staff",
+    "position": "backline"
+  },
+  {
+    "side": "ally",
+    "name": "ヴァルター",
+    "vitality": 32,
+    "strength": 70,
+    "dexterity": 65,
+    "agility": 50,
+    "intelligence": 60,
+    "spirit": 75,
+    "weakness": "darkness",
+    "experience": 0,
+    "skills": [
+      "強攻撃",
+      "連撃"
+    ],
+    "items": [
+      "potion",
+      "smoke bomb"
+    ],
+    "weapon": "sword",
+    "position": "frontline"
+  }
+]
+

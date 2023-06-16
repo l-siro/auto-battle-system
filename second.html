@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  <div class="app-display">
+  <div class="app-display" id="background-image">
     <div id="order-of-action"></div>
     <div class="main">
       <div id="battle-field">
@@ -37,7 +37,10 @@
   </div>
   <div class="gui">
     <button id="start-battle">Battle Start</button>
-    <input id="upload" type="file" />
+    <div class="data-upload">キャラクターデータ<input id="upload" type="file" /></div>
+    <div class="bg-upload">背景画像<input id="bg-upload" type="file" /></div>
+    <button id="enemy-clear-button">敵をクリア</button>
+    <button id="hp-recover-button">全回復</button>
   </div>
   <div class="thanks">素材:【vibrato様...https://vibrato08.wixsite.com/p3x-774】【katarazu様...https://booth.pm/ja/items/1461504】</div>
   <script src="battle.js"></script>
