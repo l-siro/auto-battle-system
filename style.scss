@@ -93,7 +93,7 @@ body {
 #battle-field {
   height: 75%;
   position: relative;
-  overflow: auto;
+  overflow: hidden;
   display: flex;
   justify-content: space-between;
 }
