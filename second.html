@@ -11,9 +11,10 @@
 </head>
 
 <body>
+  <div id="cutin"></div>
   <div class="app-display" id="background-image">
-    <div id="order-of-action"></div>
-    <div class="main">
+    <div class="app-display__inner">
+      <div id="order-of-action"></div>
       <div id="battle-field">
         <div class="battle-field__item">
           <div class="ally-side">
@@ -30,20 +31,30 @@
           <div id="enemy-sp"></div>
         </div>
       </div>
-      <div class="battle-log">
-        <div id="battle-log"></div>
-      </div>
     </div>
-  </div>
-  <div class="gui">
-    <button id="start-battle">Battle Start</button>
-    <div class="data-upload">キャラクターデータ<input id="upload" type="file" /></div>
-    <div class="bg-upload">背景画像<input id="bg-upload" type="file" /></div>
-    <button id="enemy-clear-button">敵をクリア</button>
-    <button id="hp-recover-button">全回復</button>
+    <div class="app-display__inner">
+      <div class="gui">
+        <div class="basic-buttons">
+          <button id="start-battle">戦闘開始</button>
+          <div class="uploads">
+            <div class="uploader -character"><input id="upload" type="file" name="file" /></div>
+            <div class="uploader -background"><input id="bg-upload" type="file" name="file" /></div>
+          </div>
+        </div>
+        <div class="command-buttons">
+          <div class="command-toggle" id="command-toggle">コマンド</div>
+          <button id="enemy-clear-button">敵をクリア</button>
+          <button id="hp-recover-button">全回復</button>
+          <button id="attack" class="disabled">攻撃</button>
+          <button id="skill" class="disabled">スキル</button>
+          <button id="item" class="disabled">アイテム</button>
+          <button id="escape" class="disabled">逃げる</button>
+        </div>
+      </div>
+      <div class="battle-log"><div id="battle-log"></div></div>
+    </div>
   </div>
   <div class="thanks">素材:【vibrato様...https://vibrato08.wixsite.com/p3x-774】【katarazu様...https://booth.pm/ja/items/1461504】</div>
   <script src="battle.js"></script>
 </body>
-
 </html>

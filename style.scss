@@ -1,37 +1,181 @@
 @import url('https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@400;700&display=swap');
 
+// 色を変数に
+$white: #ede6e3;
+$black: #334;
+
 :root {
   font-size: 10px;
 }
 
+button {
+  cursor: pointer;
+}
+
 body {
-  background: #ccc;
-  color: #333;
+  background: #000;
+  color: $black;
   font-family: 'Kaisei Opti', serif;
 }
 
-.app-display {
-  display: flex;
+#cutin {
   width: 100%;
-  min-height: 360px;
-  height: calc(100vh - 85px);
-  padding-bottom: 20px;
-  align-items: flex-start;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.cutin {
+  background: linear-gradient(180deg, rgba(17, 0, 0, 0.8), rgba(0, 0, 17, 0.5));
+  padding-bottom: 220px;
+  backdrop-filter: blur(5px);
+  animation: catInWrap 1.5s linear forwards;
+  &.-ally-win,
+  &.-enemy-win {
+    background: linear-gradient(180deg, rgba(82, 0, 0, 0.8), rgba(0, 0, 17, 0.5));
+    animation: catInWrap 4s linear forwards;
+    .cutin__text {
+      animation: catInTxt 4s linear forwards;
+      &::before ,
+      &::after {
+        animation: catInLine 4s linear forwards;
+      }
+      &::before {
+        animation-delay: .65s;
+      }
+    }
+  }
+  &.-ally-win {
+    background: linear-gradient(180deg, rgba(0, 65, 65, 0.8), rgba(0, 0, 17, 0.5));
+  }
+  &__text {
+    text-align: center;
+    font-size: 5rem;
+    color: $white;
+    text-shadow: 0 0 5px $black;
+    width: 100%;
+    padding: 0.5em 0;
+    text-indent: 1em;
+    animation: catInTxt 1.5s linear forwards;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    &::before ,
+    &::after {
+      position: absolute;
+      content: '';
+      width: 0;
+      height: 1px;
+      display: inline-block;
+      background: $white;
+      left: 0;
+      top: 0;
+      animation: catInLine 1.5s linear forwards;
+      animation-delay: .65s;
+    }
+    &::before {
+      animation-delay: .5s;
+      left: auto;
+      right: 0;
+      top: auto;
+      bottom: 0;
+    }
+  }
+}
+
+@keyframes catInWrap {
+  0% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes catInTxt {
+  0% {
+    letter-spacing: 1em;
+    filter: blur(10px);
+    opacity: 0;
+  }
+  15% {
+    letter-spacing: 1em;
+    filter: blur(10px);
+    opacity: 0;
+  }
+  30% {
+    letter-spacing: .5em;
+    filter: blur(0px);
+    opacity: 1;
+  }
+  85% {
+    letter-spacing: .6em;
+    filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    letter-spacing: 1em;
+    filter: blur(10px);
+    opacity: 0;
+  }
+}
+
+@keyframes catInLine {
+  0% {
+    width: 0;
+  }
+  10% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+
+.app-display {
   background-image: url("img/bg/bg1.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  height: calc(100vh - 25px);
+  min-height: 740px;
+  padding: 15px 0;
+  &__inner {
+    display: flex;
+    width: 100%;
+    height: calc(100% - 220px);
+    align-items: flex-start;
+    &:last-child {
+      height: 220px;
+      display: block;
+      position: relative;
+    }
+  }
 }
 
+
 #order-of-action {
-  padding: 20px 20px 100px 0;
+  padding: 20px 20px 40px 0;
   width: 20%;
   // height: 100%;
   overflow: auto;
   position: relative;
   font-size: 1.6rem;
   line-height: 2;
-  color: #fff;
+  color: $white;
   .order {
     position: relative;
     padding-left: 20px;
@@ -39,8 +183,8 @@ body {
     animation: sortUp 0.5s linear forwards;
     border-radius: 0 5px 5px 0;
     background: linear-gradient(-90deg, rgba(0, 0, 17, 0.5), transparent);
-    box-shadow: 0 0 1.5px #fff;
-    border-right: #1c1c32 10px solid;
+    box-shadow: 0 0 1.5px $white;
+    border-right: $black 10px solid;
     &.enemy {
       border-right: #691e1e 10px solid;
     }
@@ -84,14 +228,10 @@ body {
     border-left: #ff8d8d solid 5px;
   }
 }
-.main {
+
+#battle-field {
   width: 80%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-#battle-field {
-  height: 75%;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -138,7 +278,7 @@ body {
   justify-content: flex-start;
   &::before {
     border-radius: 10px;
-    background: linear-gradient(-90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+    background: linear-gradient(-90deg, rgba(0, 0, 17, 0.8), rgba(0, 0, 17, 0.5));
   }
 }
 #enemy-sp {
@@ -146,7 +286,7 @@ body {
   justify-content: flex-end;
   &::before {
     border-radius: 10px 0 0 10px;
-    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+    background: linear-gradient(90deg, rgba(0, 0, 17, 0.8), rgba(0, 0, 17, 0.5));
   }
 }
 .enemy-side,
@@ -170,7 +310,7 @@ body {
 
 .character {
   width: 120px;
-  background: #fff;
+  background: $white;
   border-radius: 5px;
   box-shadow: -10px 5px 8px rgba(0, 0, 0, 0.3);
   padding: 10px 15px;
@@ -181,6 +321,7 @@ body {
   background-position: right bottom;
   background-repeat: no-repeat;
   background-size: contain;
+  position: relative;
   .ally-side & {
     transition-delay: .2s;
     &.join {
@@ -244,7 +385,7 @@ body {
       text-align: center;
       font-weight: bold;
       letter-spacing: 0.15em;
-      text-shadow: 0 0 4px #fff;
+      text-shadow: 0 0 4px $white;
       z-index: 1;
     }
   }
@@ -271,7 +412,7 @@ body {
       text-align: center;
       font-weight: bold;
       letter-spacing: 0.15em;
-      text-shadow: 0 0 4px #fff;
+      text-shadow: 0 0 4px $white;
       z-index: 1;
     }
   }
@@ -344,41 +485,54 @@ body {
 }
 
 .status {
-  position: relative;
-  &-inner {
-    line-height: 1.8;
-    visibility: hidden;
-    width: 160px;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    color: #fff;
-    text-align: center;
-    padding: 10px 15px;
-    border-radius: 6px;
-    position: absolute;
-    z-index: 1;
-    bottom: -60px;
-    left: 100%;
-    opacity: 0;
-    transition: opacity 0.3s;
-    th,
-    td {
-      vertical-align: top;
-    }
-    th {
-      text-align: right;
-      width: 40px;
-    }
-    td {
-      text-align-last: left;
-    }
-    .character:hover & {
-      visibility: visible;
-      opacity: 1;
-    }
+  line-height: 1.8;
+  width: 160px;
+  background: linear-gradient(0deg, rgba(0, 0, 17, 0.5), rgba(0, 0, 17, .8));
+  backdrop-filter: blur(5px);
+  color: $white;
+  text-align: center;
+  padding: 10px 15px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 33px;
+  left: 15px;
+  opacity: 0;
+  transition: max-width 0.3s, opacity 0.3s;
+  max-width: 0;
+  overflow: hidden;
+  box-shadow: 0 0 2px $white;
+  table {
+    width: 130px;
+  }
+  th,
+  td {
+    vertical-align: top;
+  }
+  th {
+    text-align: right;
+    width: 40px;
+  }
+  td {
+    text-align-last: left;
+  }
+  .character:hover & {
+    opacity: 1;
+    max-width: 300px;
   }
 }
 
+
+progress {
+  display: block;
+}
+
+.battle-log {
+  height: 100%;
+  width: calc(100% - 320px);
+  position: relative;
+  margin-left: auto;
+}
 
 #battle-log {
   width: 100%;
@@ -386,7 +540,7 @@ body {
   font-size: 1.8rem;
   height: 100%;
   background: linear-gradient(180deg, rgba(0, 0, 17, 0.8), rgba(0, 0, 17, 0.5));
-  box-shadow: 0 0 1.5px #fff;
+  box-shadow: 0 0 1.5px $white;
   color: #ccc;
   overflow-y: scroll;
   padding: 10px 20px 0;
@@ -421,10 +575,6 @@ body {
     }
   }
 }
-.battle-log {
-  height: 25%;
-  position: relative;
-}
 
 @keyframes logIn {
   from {
@@ -435,52 +585,6 @@ body {
   }
 }
 
-progress {
-  display: block;
-}
-
-input#upload {
-  display: block;
-  font-family: 'Kaisei Opti', serif;
-}
-
-#start-battle {
-  background: #eee;
-  position: relative;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  max-width: 240px;
-  padding: 10px 25px;
-  color: #313131;
-  transition: 0.3s color ease-in-out;
-  font-weight: 500;
-  z-index: 0;
-  border: 0;
-  border-left: solid 5px #6bb6ff;
-  font-family: 'Kaisei Opti', serif;
-  cursor: pointer;
-  &:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    display: block;
-    background: #6bb6ff;
-    transition: .3s width ease-in-out;
-    left: 0;
-  }
-  
-  &:hover {
-    color: #FFF;
-  }
-  
-  &:hover:before {
-    width: 100%;
-    z-index: -1;
-  }
-}
 
 .thanks {
   padding: 0.5em 2em;
@@ -501,14 +605,180 @@ input#upload {
 
 
 .gui {
-  width: 100%;
-  height: 60px;
-  font-size: 1.4rem;
-  background: #ddd;
-  padding: 10px;
-  box-sizing: border-box;
+  width: 560px;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 30px;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  font-size: 1.4rem;
+  background: $white;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 10px 5px 8px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: -265px;
+  bottom: 0;
+  z-index: 2;
+  transition: left 0.3s ease-in-out;
+  &.open {
+    left: 0;
+  }
+}
+
+.basic-buttons,
+.command-buttons {
+  width: 260px;
+  padding: 20px 25px;
+}
+.command-buttons {
+  width: 300px;
+  padding-right: 40px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  position: relative;
+  gap: 5px;
+  button {
+    border: none;
+    border-radius: 8px;
+    padding: 5px;
+    width: calc(50% - 2.5px);
+    background: $white;
+    transition: .2s;
+    border: 1px $black solid;
+    &:hover {
+      background: $black;
+      color: $white;
+    }
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      &:hover {
+        background: $white;
+        color: $black;
+      }
+    }
+  }
+  .command-toggle {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    width: 30px;
+    height: calc(100% - 40px);
+    margin: 0;
+    border-radius: 8px;
+    border: solid $black;
+    border-width: 0 1px 0 0;
+    background: none;
+    transition: .2s ease-in-out;
+    padding: 0 5px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+    text-align: center;
+    letter-spacing: .35em;
+    cursor: default;
+  }
+}
+
+#start-battle {
+  background: $white;
+  position: relative;
+  text-align: center;
+  height: 40px;
+  width: 100%;
+  letter-spacing: .5em;
+  text-indent: .5em;
+  line-height: 1;
+  border-radius: 8px;
+  padding: 0 20px;
+  text-align: center;
+  transition: 0.2s color ease-in-out , .2s letter-spacing ease-in-out;
+  font-weight: 500;
+  z-index: 0;
+  border: 1px $black solid;
+  overflow: hidden;
+  font-size: 1.6rem;
+  cursor: pointer;
+  &:hover {
+    color: $white;
+    letter-spacing: 1em;
+  }
+  &:before ,
+  &:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    display: block;
+    background: rgba(139, 0, 0, 0.5);
+    transition: .2s width ease-in-out;
+    z-index: -1;
+    right: 0;
+  }
+  &:before {
+    left: 0;
+    right: auto;
+  }
+  &:hover::after ,
+  &:hover:before {
+    width: 100%;
+  }
+  &:disabled {
+    color: #8b0000;;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+input#upload {
+  display: block;
+  font-family: 'Kaisei Opti', serif;
+}
+
+.uploads {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+.uploader {
+  position: relative;
+  border-radius: 8px;
+  width: calc(50% - 5px); height: 80px;
+  background: $black;
+  overflow: hidden;
+  transition: .2s;
+  &:hover {
+    opacity: 0.8;
+  }
+  &::before {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: absolute;
+    top: 8px; bottom: 8px;
+    left: 8px; right: 8px;
+    border: dashed 2px rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    content: 'ココにドロップ';
+    background-repeat: no-repeat;
+    background-position: top 10px center;
+    background-size: 25px;
+    pointer-events: none;
+    border-radius: 8px;
+    padding-bottom: 5px;
+  }
+  &.-character::before {
+    background-image: url('data:image/svg+xml;charset=utf8,%3C!--%20Generator%3A%20Adobe%20Illustrator%2018.1.1%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%206.00%20Build%200)%20--%3E%3Csvg%20version%3D%221.1%22%20id%3D%22_x32_%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20512%20512%22%20style%3D%22width%3A%20256px%3B%20height%3A%20256px%3B%20opacity%3A%201%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%20.st0%7Bfill%3A%234B4B4B%3B%7D%3C%2Fstyle%3E%3Cg%3E%20%3Cpath%20class%3D%22st0%22%20d%3D%22M48.335%2C490.794c0.016-19.684%2C4.754-35.814%2C12.292-49.534c11.288-20.533%2C29.242-35.692%2C47.474-46.686%20c18.217-10.994%2C36.453-17.692%2C47.818-21.697c8.954-3.168%2C19.354-7.755%2C28.211-13.902c4.429-3.093%2C8.506-6.577%2C11.782-10.871%20c3.234-4.241%2C5.773-9.623%2C5.777-15.825c0-9.149%2C0-20.579%2C0-36.258v-0.505l-0.054-0.506c-0.532-4.9-2.48-8.766-4.444-12.096%20c-3.013-5.023-6.4-9.394-9.497-15.059c-3.086-5.643-5.96-12.456-7.667-22.049l-0.992-5.604l-5.359-1.914%20c-2.45-0.88-4.203-1.73-5.68-2.756c-2.174-1.546-4.188-3.613-6.744-8.368c-2.519-4.723-5.287-11.996-8.323-22.669%20c-1.305-4.555-1.741-8-1.741-10.442c0.076-4.196%2C1.006-5.183%2C1.515-5.819c0.544-0.612%2C1.512-1.079%2C2.588-1.317l8.521-1.906%20l-0.915-8.682c-2.01-19.048-4.792-46.532-4.792-73.734c-0.008-18.382%2C1.297-36.626%2C4.777-51.685%20c2.886-12.717%2C7.415-22.822%2C13.049-29.253c9.053%2C2.066%2C17.436%2C2.817%2C25.268%2C2.81c13.815-0.03%2C25.88-1.884%2C39.167-1.853h0.314%20l0.333-0.015c4.98-0.306%2C9.436-0.452%2C13.435-0.452c12.755%2C0.007%2C20.705%2C1.462%2C27.16%2C3.95c6.446%2C2.488%2C11.966%2C6.278%2C19.43%2C12.089%20l1.922%2C1.492l2.393%2C0.421c8.754%2C1.569%2C15.238%2C4.686%2C20.471%2C8.919c7.798%2C6.323%2C13.05%2C15.656%2C16.361%2C27.232%20c3.3%2C11.53%2C4.502%2C25.05%2C4.49%2C38.486c0.004%2C11.316-0.823%2C22.569-1.776%2C32.621c-0.954%2C10.061-2.025%2C18.849-2.499%2C25.702l-0.004%2C0.007%20c-0.084%2C1.218-0.191%2C2.266-0.314%2C3.446l-0.87%2C8.352l8.12%2C2.136c1.037%2C0.275%2C1.856%2C0.72%2C2.373%2C1.332%20c0.49%2C0.636%2C1.374%2C1.738%2C1.435%2C5.735c0%2C2.442-0.437%2C5.887-1.734%2C10.427c-4.038%2C14.248-7.656%2C22.378-10.729%2C26.612%20c-1.543%2C2.136-2.868%2C3.384-4.345%2C4.425c-1.478%2C1.026-3.232%2C1.876-5.681%2C2.756l-5.358%2C1.914l-0.992%2C5.604%20c-1.167%2C6.606-2.572%2C11.369-4.054%2C15.105c-2.236%2C5.589-4.636%2C9.049-7.728%2C13.62c-3.063%2C4.509-6.753%2C10.121-9.635%2C18.168%20l-0.582%2C1.608v1.714c0%2C15.679%2C0%2C27.109%2C0%2C36.258c-0.011%2C5.719%2C2.128%2C10.895%2C5.049%2C15.006c4.433%2C6.209%2C10.523%2C10.733%2C17.142%2C14.691%20c6.634%2C3.92%2C13.902%2C7.15%2C20.87%2C9.861l7.097-18.266c-8.41-3.246-17.011-7.358-22.822-11.622c-2.909-2.105-5.072-4.234-6.263-5.949%20c-1.214-1.761-1.462-2.832-1.474-3.721c0-8.743%2C0-19.675%2C0-34.305c1.264-3.193%2C2.584-5.796%2C4.078-8.215%20c2.526-4.15%2C5.89-8.344%2C9.267-14.653c2.802-5.26%2C5.302-11.882%2C7.234-20.548c1.7-0.827%2C3.396-1.784%2C5.05-2.94%20c5.068-3.499%2C9.355-8.598%2C12.862-15.266c3.545-6.699%2C6.604-15.098%2C9.865-26.474c1.677-5.91%2C2.48-11.094%2C2.484-15.809%20c0.057-7.579-2.312-14.148-6.232-18.582c-1.366-1.569-2.844-2.756-4.33-3.782c0.494-5.834%2C1.386-13.574%2C2.232-22.5%20c0.98-10.358%2C1.864-22.202%2C1.864-34.467c-0.038-19.408-2.106-39.902-10.316-57.587c-4.115-8.82-9.888-16.934-17.769-23.342%20c-7.262-5.918-16.33-10.16-26.849-12.395c-7.139-5.474-14.052-10.267-22.669-13.597c-9.302-3.605-20.04-5.274-34.222-5.266%20c-4.478%2C0-9.32%2C0.16-14.622%2C0.482C225.025%2C3.1%2C212.902%2C4.9%2C201.2%2C4.869c-8.169-0.008-16.223-0.789-25.559-3.446L170.638%2C0%20l-3.985%2C3.338c-12.26%2C10.412-18.841%2C25.93-22.868%2C43.171c-3.977%2C17.318-5.267%2C36.786-5.278%2C56.087%20c0.004%2C25.188%2C2.255%2C50.069%2C4.168%2C68.742c-1.458%2C0.949-2.909%2C2.044-4.284%2C3.506c-4.226%2C4.426-6.874%2C11.27-6.802%2C19.209%20c0.003%2C4.716%2C0.808%2C9.915%2C2.492%2C15.825c4.356%2C15.151%2C8.295%2C25.08%2C13.624%2C32.614c2.657%2C3.744%2C5.742%2C6.806%2C9.095%2C9.126%20c1.646%2C1.148%2C3.33%2C2.098%2C5.022%2C2.924c3.035%2C12.969%2C8.146%2C22.37%2C12.528%2C29.176c2.466%2C3.851%2C4.643%2C6.913%2C5.991%2C9.202%20c1.29%2C2.144%2C1.673%2C3.369%2C1.75%2C3.928c0%2C15.228%2C0%2C26.451%2C0%2C35.431c0.003%2C0.713-0.276%2C1.968-1.792%2C3.982%20c-2.196%2C2.978-6.99%2C6.775-12.735%2C9.991c-5.734%2C3.269-12.36%2C6.102-18.16%2C8.146c-15.614%2C5.528-45.238%2C16.315-71.467%2C37.315%20c-13.114%2C10.511-25.426%2C23.664-34.478%2C40.094c-9.057%2C16.414-14.742%2C36.104-14.723%2C58.988c0%2C3.973%2C0.169%2C8.054%2C0.517%2C12.226%20l0.751%2C8.98h320.684v-19.599H48.404C48.396%2C491.874%2C48.335%2C491.314%2C48.335%2C490.794z%22%20style%3D%22fill%3A%20rgb(255%2C%20255%2C%20255)%3B%22%3E%3C%2Fpath%3E%20%3Cpath%20class%3D%22st0%22%20d%3D%22M412.708%2C361.088c-38.968%2C0-70.556%2C31.588-70.556%2C70.556c0%2C38.968%2C31.588%2C70.556%2C70.556%2C70.556%20c38.968%2C0%2C70.556-31.588%2C70.556-70.556C483.264%2C392.676%2C451.676%2C361.088%2C412.708%2C361.088z%20M451.906%2C441.444h-29.398v29.398h-19.599%20v-29.398H373.51v-19.599h29.398v-29.399h19.599v29.399h29.398V441.444z%22%20style%3D%22fill%3A%20rgb(255%2C%20255%2C%20255)%3B%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  }
+  &.-background::before {
+    background-image: url('data:image/svg+xml;charset=utf8,%3C!--%20Generator%3A%20Adobe%20Illustrator%2018.0.0%2C%20SVG%20Export%20Plug-In%20.%20SVG%20Version%3A%206.00%20Build%200)%20--%3E%3Csvg%20version%3D%221.1%22%20id%3D%22_x32_%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20x%3D%220px%22%20y%3D%220px%22%20viewBox%3D%220%200%20512%20512%22%20style%3D%22width%3A%20256px%3B%20height%3A%20256px%3B%20opacity%3A%201%3B%22%20xml%3Aspace%3D%22preserve%22%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%20.st0%7Bfill%3A%234B4B4B%3B%7D%3C%2Fstyle%3E%3Cg%3E%20%3Cpath%20class%3D%22st0%22%20d%3D%22M386.8%2C291.064c-16.951-9.852-36.163-21.017-65.082-21.017c-25.516%2C0-42.931%2C7.648-59.771%2C15.043%20c-16.539%2C7.263-33.643%2C14.771-58.49%2C14.771c-24.548%2C0-39.89-14.037-56.134-28.897c-15.976-14.62-32.498-29.736-58.28-29.736h-1.59%20V388.51h337.093v-83.68h-1.59C410.492%2C304.83%2C399.514%2C298.452%2C386.8%2C291.064z%22%20style%3D%22fill%3A%20rgb(255%2C%20255%2C%20255)%3B%22%3E%3C%2Fpath%3E%20%3Cpath%20class%3D%22st0%22%20d%3D%22M294.634%2C232.267c26.052%2C0%2C48.517-18.54%2C53.416-44.084l0.939-4.903l-3.602%2C3.455%20c-6.728%2C6.452-15.592%2C10.004-24.965%2C10.004c-19.992%2C0-36.258-16.238-36.258-36.2c0-14.237%2C8.4-27.193%2C21.399-33.006l4.546-2.034%20l-4.882-0.976c-3.422-0.685-6.986-1.032-10.594-1.032c-29.99%2C0-54.389%2C24.398-54.389%2C54.387S264.643%2C232.267%2C294.634%2C232.267z%22%20style%3D%22fill%3A%20rgb(255%2C%20255%2C%20255)%3B%22%3E%3C%2Fpath%3E%20%3Cpath%20class%3D%22st0%22%20d%3D%22M0%2C47.702v416.596h512V47.702H0z%20M50.881%2C413.413V98.583h410.238v314.83H50.881z%22%20style%3D%22fill%3A%20rgb(255%2C%20255%2C%20255)%3B%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E')
+  }
+  input {
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
 }

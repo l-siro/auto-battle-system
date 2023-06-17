@@ -1,4 +1,3 @@
-
 // 背景設定
 document.addEventListener("DOMContentLoaded", function () {
   var imageUpload = document.getElementById("bg-upload");
@@ -9,13 +8,23 @@ document.addEventListener("DOMContentLoaded", function () {
     var reader = new FileReader();
 
     reader.onload = function (e) {
-      backgroundImage.style.backgroundImage =
-        "url(" + e.target.result + ")";
+      backgroundImage.style.transition = 'opacity 0.5s'; // 暗くなるのに0.5秒かけるように設定
+      backgroundImage.style.opacity = 0; // 透明度を0に設定（暗くする）
+
+      setTimeout(function() {
+        backgroundImage.style.transition = 'opacity 4s'; // 明るくなるのに4秒かけるように設定
+        backgroundImage.style.backgroundImage = "url(" + e.target.result + ")"; // 新しい画像を設定
+        backgroundImage.style.opacity = 1; // 透明度を1に設定（明るくする）
+      }, 500); // 500ms後（暗くなる遷移が完了した後）に実行
     };
 
     reader.readAsDataURL(file);
   });
 });
+
+
+
+
 
 
 // 敵のクリアボタン
@@ -256,10 +265,6 @@ function createCharacter(character) {
   // create div for character status
   const characterStatusDiv = document.createElement('div');
   characterStatusDiv.classList.add('status');
-  const statusInnerDiv = document.createElement('div');
-  statusInnerDiv.classList.add('status-inner');
-  characterStatusDiv.appendChild(statusInnerDiv);
-  
   characterDiv.appendChild(characterStatusDiv);
   // console.log(character.position);
   if (character.side === 'ally') {
@@ -379,8 +384,24 @@ document.getElementById('upload').addEventListener('change', function (e) {
 let startBattleButton = document.getElementById('start-battle');
 
 startBattleButton.addEventListener('click', function () {
-  phase++;
-  takeTurn();
+  startBattleButton.disabled = true;
+  startBattleButton.textContent = '戦闘中';
+  
+  // #cutinに戦闘開始カットインを表示、アニメーションさせて消す
+  let cutin = document.getElementById('cutin');
+  let cutinText = document.createElement('div');
+  cutinText.textContent = '/  戦闘開始  /';
+  cutin.classList.add('cutin');
+  cutinText.classList.add('cutin__text');
+  cutin.appendChild(cutinText);
+  // アニメーション終了後にcutinTextを削除
+  cutin.addEventListener('animationend', function () {
+    cutin.removeChild(cutinText);
+    cutin.classList.remove('cutin');
+    phase++;
+    takeTurn();
+  });
+  
 });
 
 // 共有SPを定義
@@ -530,6 +551,24 @@ function processTurnEnd(activeOrderElement) {
     logDiv.classList.add('enemy-win');
     logDiv.textContent = logText;
     battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+    
+    // カットインを表示
+    let cutin = document.getElementById('cutin');
+    let cutinText = document.createElement('div');
+    cutinText.textContent = '/  敗北...  /';
+    cutin.classList.add('cutin');
+    cutin.classList.add('-enemy-win');
+    cutinText.classList.add('cutin__text');
+    cutin.appendChild(cutinText);
+    // アニメーション終了後にcutinTextを削除
+    cutin.addEventListener('animationend', function () {
+      cutin.removeChild(cutinText);
+      cutin.classList.remove('cutin');
+      cutin.classList.remove('-enemy-win');
+    });
+    // 戦闘開始ボタンを有効化
+    startBattleButton.disabled = false;
+    startBattleButton.textContent = '戦闘開始';
     return;
   } else if (enemies.length === 0) {
     // 味方の勝利
@@ -538,6 +577,24 @@ function processTurnEnd(activeOrderElement) {
     logDiv.classList.add('ally-win');
     logDiv.textContent = logText;
     battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+
+    // カットインを表示
+    let cutin = document.getElementById('cutin');
+    let cutinText = document.createElement('div');
+    cutinText.textContent = '/  勝利！  /';
+    cutin.classList.add('cutin');
+    cutin.classList.add('-ally-win');
+    cutinText.classList.add('cutin__text');
+    cutin.appendChild(cutinText);
+    // アニメーション終了後にcutinTextを削除
+    cutin.addEventListener('animationend', function () {
+      cutin.removeChild(cutinText);
+      cutin.classList.remove('cutin');
+      cutin.classList.remove('-ally-win');
+    });
+    // 戦闘開始ボタンを有効化
+    startBattleButton.disabled = false;
+    startBattleButton.textContent = '戦闘開始';
     return;
   }
 
@@ -691,6 +748,26 @@ let skills = [
     // スキルの効果
     effect: function (user, target) {
       let healingAmount = user.spirit * 3;
+      if (target.hp + healingAmount > target.maxHP) {
+        healingAmount = target.maxHP - target.hp;
+      }
+      target.hp += healingAmount;
+      return healingAmount;
+    },
+    // スキル使用条件
+    condition: function (user, target) {
+      // 回復対象がいるかどうか
+      return sharedSP[user.side] >= this.spCost && target.hp < target.maxHP && target.side === user.side && target.hp > 0;
+    }
+  },
+  {
+    name: 'エリアヒール',
+    id: 'areaHealing',
+    type: 'healing',
+    spCost: 5,
+    // スキルの効果
+    effect: function (user, target) {
+      let healingAmount = user.spirit;
       if (target.hp + healingAmount > target.maxHP) {
         healingAmount = target.maxHP - target.hp;
       }
@@ -858,7 +935,7 @@ function updateStatus(character) {
   hpIndicatorElement.value = character.hp;
 
   // Update other status
-  let statusElement = characterElement.querySelector('.status-inner');
+  let statusElement = characterElement.querySelector('.status');
 
   let weapon = weaponData.find(w => w.id === character.weapon);
 
@@ -939,4 +1016,12 @@ function applyRecoveryEffect(character, recoveryAmount) {
 // バトルログ表示
 document.querySelector('#battle-log').addEventListener('click', function () {
   this.classList.toggle('open');
+});
+
+// .command-buttonsにホバーすると.guiに.open追加、外すと削除
+document.querySelector('.command-buttons').addEventListener('mouseover', function () {
+  document.querySelector('.gui').classList.add('open');
+});
+document.querySelector('.command-buttons').addEventListener('mouseout', function () {
+  document.querySelector('.gui').classList.remove('open');
 });
