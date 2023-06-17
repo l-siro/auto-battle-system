@@ -1018,10 +1018,9 @@ document.querySelector('#battle-log').addEventListener('click', function () {
   this.classList.toggle('open');
 });
 
-// .command-buttonsにホバーすると.guiに.open追加、外すと削除
-document.querySelector('.command-buttons').addEventListener('mouseover', function () {
-  document.querySelector('.gui').classList.add('open');
-});
-document.querySelector('.command-buttons').addEventListener('mouseout', function () {
-  document.querySelector('.gui').classList.remove('open');
-});
+// .guiの表示切り替え
+const gui = document.querySelector('.gui');
+const commandButtons = document.querySelector('.command-buttons');
+commandButtons.addEventListener('mouseover', () => gui.classList.add('open'));
+gui.addEventListener('mouseleave', () => gui.classList.remove('open'));
+
