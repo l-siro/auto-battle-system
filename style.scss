@@ -423,7 +423,7 @@ body {
       content: '回避';
       text-align: center;
       font-size: 2.5rem;
-      padding-top: 70px;
+      padding-top: 100px;
       width: 100%;
       height: 100%;
       position: absolute;
@@ -567,11 +567,28 @@ progress {
     &:first-child {
       opacity: 1;
     }
+    > * {
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
   }
   &.open {
     height: calc(100vh - 125px);
     div {
       opacity: 1;
+    }
+  }
+  table {
+    font-size: 1.2rem;
+    th,td {
+      padding: 0 1.5em;
+      border: solid rgba(204, 204, 204, 0.25);
+      border-width: 0 1px 0 0;
+      text-align: center;
+      &:last-child {
+        border: none;
+      }
     }
   }
 }
@@ -618,8 +635,35 @@ progress {
   bottom: 0;
   z-index: 2;
   transition: left 0.3s ease-in-out;
+  &{ user-select: none; } 
+  &::selection{ background:none; } 
+  &::-moz-selection{ background: none; }
   &.open {
     left: 0;
+  }
+}
+
+.speed-control {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 5px;
+  border-top: 1px dashed $black;
+  &__label {
+    margin-right: 10px;
+  }
+  button {
+    background: none;
+    border: none;
+    padding: 5px;
+    line-height: 0;
+    &:hover {
+      opacity: 0.6;
+    }
+    &.selected svg .st0 {
+      fill: #691e1e;
+    }
   }
 }
 
@@ -635,6 +679,7 @@ progress {
   justify-content: space-between;
   flex-wrap: wrap;
   position: relative;
+  line-height: 1.2;
   gap: 5px;
   button {
     border: none;

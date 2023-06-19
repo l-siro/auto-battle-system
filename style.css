@@ -417,7 +417,7 @@ body {
   content: "回避";
   text-align: center;
   font-size: 2.5rem;
-  padding-top: 70px;
+  padding-top: 100px;
   width: 100%;
   height: 100%;
   position: absolute;
@@ -561,11 +561,26 @@ progress {
 #battle-log div:first-child {
   opacity: 1;
 }
+#battle-log div > *:not(:last-child) {
+  margin-right: 10px;
+}
 #battle-log.open {
   height: calc(100vh - 125px);
 }
 #battle-log.open div {
   opacity: 1;
+}
+#battle-log table {
+  font-size: 1.2rem;
+}
+#battle-log table th, #battle-log table td {
+  padding: 0 1.5em;
+  border: solid rgba(204, 204, 204, 0.25);
+  border-width: 0 1px 0 0;
+  text-align: center;
+}
+#battle-log table th:last-child, #battle-log table td:last-child {
+  border: none;
 }
 
 @keyframes logIn {
@@ -606,8 +621,46 @@ progress {
   z-index: 2;
   transition: left 0.3s ease-in-out;
 }
+.gui {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+.gui::-moz-selection {
+  background: none;
+}
+.gui::selection {
+  background: none;
+}
+.gui::-moz-selection {
+  background: none;
+}
 .gui.open {
   left: 0;
+}
+
+.speed-control {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 5px;
+  border-top: 1px dashed #334;
+}
+.speed-control__label {
+  margin-right: 10px;
+}
+.speed-control button {
+  background: none;
+  border: none;
+  padding: 5px;
+  line-height: 0;
+}
+.speed-control button:hover {
+  opacity: 0.6;
+}
+.speed-control button.selected svg .st0 {
+  fill: #691e1e;
 }
 
 .basic-buttons,
@@ -623,6 +676,7 @@ progress {
   justify-content: space-between;
   flex-wrap: wrap;
   position: relative;
+  line-height: 1.2;
   gap: 5px;
 }
 .command-buttons button {
