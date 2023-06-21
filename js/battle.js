@@ -692,10 +692,9 @@ function processTurnEnd(activeOrderElement) {
       cutin.classList.remove('cutin');
       cutin.classList.remove('-ally-win');
       console.log(characters.map(c => `${c.name}: ${c.hp}:${c.maxHP}`));
-      // itemSelectionPhase();
+      itemSelectionPhase();
     }, {once: true});
     // アイテムドロップの処理
-    itemSelectionPhase();
     
 
     // 戦闘開始ボタンを有効化
@@ -793,7 +792,7 @@ function useSkill(user, target, action) {
   }
 
   if (hit) {
-    let effectResult = skill.effect(user, target); // 使用するスキルの効果を発揮
+    let effectResult = skill.effect(user, target, battleLogDiv); // 使用するスキルの効果を発揮
 
     // スキルの効果のログを出力
     if (effectResult > 0) {
@@ -913,13 +912,29 @@ function updateStatus(character) {
 
 function itemSelectionPhase() {
   let itemSelectionDiv = document.getElementById('itemSelection');
-  itemSelectionDiv.innerHTML = "戦闘が終了しました！ アイテムを選んでキャラクターを強化しましょう。";
+  itemSelectionDiv.classList.add('item-selection');
+  itemSelectionDiv.classList.remove('-hide');
+  // 子要素としてitemSelection__innerを追加
+  let itemSelectionInner = document.createElement('div');
+  itemSelectionInner.classList.add('item-selection__inner');
+  itemSelectionDiv.appendChild(itemSelectionInner);
+  // 子要素としてitemSelection__textを追加
+  let itemSelectionText = document.createElement('h2');
+  itemSelectionText.classList.add('item-selection__text');
+  itemSelectionInner.appendChild(itemSelectionText);
+  // itemSelection__textにテキストを追加
+  itemSelectionText.textContent = '戦闘終了！獲得アイテムを選択してください';
+  itemSelectionText.classList.add('item-selection__text');
+  let itemSelectionBox = document.createElement('div');
+  itemSelectionBox.classList.add('item-selection__box');
+  itemSelectionInner.appendChild(itemSelectionBox);  
 
   characters.forEach((character, index) => {
     if (character.side === 'ally') { // 味方だけがアイテムを選択できるようにする
       let characterDiv = document.createElement('div');
-      let characterMessage = document.createElement('p');
-      characterMessage.textContent = `${character.name}はどのアイテムを選びますか？`;
+      characterDiv.classList.add('item-selection__character');
+      let characterMessage = document.createElement('h3');
+      characterMessage.textContent = `${character.name}`;
       characterDiv.appendChild(characterMessage);
 
       let randomItems = pickRandomItems(3);
@@ -936,12 +951,14 @@ function itemSelectionPhase() {
           // 全てのキャラクターがアイテムを選択したら、コンソールにキャラクターのステータスを表示する
           if (index === characters.length - 1) {
             console.log(characters);
+            // UIを削除
+            itemSelectionDiv.remove();
           }
         }
         characterDiv.appendChild(itemButton);
         characterDiv.appendChild(itemDescription);
       });
-      itemSelectionDiv.appendChild(characterDiv);
+      itemSelectionBox.appendChild(characterDiv);
     }
   });
 }
@@ -961,16 +978,6 @@ function pickRandomItems(n) {
 
   return selectedItems;
 }
-
-
-
-// アイテムの効果適用部分
-// let itemEffect = itemEffects[item];
-// if (itemEffect && typeof itemEffect.apply === 'function') {
-//   itemEffect.apply(character);
-//   // ここでキャラクターのHPをログ出力してみると良いでしょう
-//   console.log(`${character.name}: ${character.hp}`);
-// }
 
 
 

@@ -47,7 +47,7 @@ export const skills = [
     type: 'damage',
     spCost: 5,
     // スキルの効果
-    effect: function (user, target) {
+    effect: function (user, target, battleLogDiv) {
       let damage = user.intelligence * 2;
       if (target.weakness === 'fire') {
         // 通知ログを出力

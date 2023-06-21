@@ -10,6 +10,7 @@ export const itemEffects = {
       let logDiv = document.createElement('div');
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+      updateStatus(character);
     }
   },
   "素早さの加護": {
@@ -22,6 +23,7 @@ export const itemEffects = {
       let logDiv = document.createElement('div');
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+      updateStatus(character);
     }
   },
   "防御力の加護": {
@@ -34,6 +36,7 @@ export const itemEffects = {
       let logDiv = document.createElement('div');
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+      updateStatus(character);
     }
   },
   "最大HPの加護": {
@@ -46,9 +49,10 @@ export const itemEffects = {
       let logDiv = document.createElement('div');
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+      updateStatus(character);
     }
   },
-  "ハイポーション": {
+  "ポーション": {
     description: "HPが10回復",
     apply: function(character,battleLogDiv) {
       let old_status = character.hp
@@ -58,6 +62,7 @@ export const itemEffects = {
       let logDiv = document.createElement('div');
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+      updateStatus(character);
     }
   },
   "エリクサー": {
@@ -70,6 +75,7 @@ export const itemEffects = {
       let logDiv = document.createElement('div');
       logDiv.textContent = logText;
       battleLogDiv.insertBefore(logDiv, battleLogDiv.firstChild);
+      updateStatus(character);
     }
   }
 }
