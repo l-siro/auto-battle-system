@@ -76,8 +76,9 @@ export const skills = [
     spCost: 1,
     // スキルの効果
     effect: function (user, target) {
-      let baseDamage = user.attack - target.defense;
+      let baseDamage = (user.attack / 2) - (target.defense / 4);
       let damage = baseDamage  * 1.5;
+      damage = Math.floor(damage);
       if (damage < 1) {
         damage = 1;
       }
@@ -99,11 +100,16 @@ export const skills = [
     spCost: 2,
     // スキルの効果
     effect: function (user, target) {
-      let damage = user.attack * 3;
+      let baseDamage = (user.attack / 2) - (target.defense / 4);
+      let damage = baseDamage * 3;
+      damage = Math.floor(damage);
+      // console.log('スキル発動前ダメージ値確認', damage);
       if (target.hp - damage < 0) {
         damage = target.hp;
       }
       target.hp -= damage;
+      console.log('連撃', user.attack, '->', target.defense , baseDamage, damage);
+
       return damage;
     },
     condition: function (user, target) {
@@ -118,9 +124,10 @@ export const skills = [
     effect: function (character) {
       // 命中率を20%増加させる
       character.accuracy *= 1.2;
+      console.log('狙撃スキル発動', character.name,'の命中率が',character.accuracy);
     },
+    // 狙撃スキルの使用条件を定義
     condition: function (user, target) {
-      // 狙撃スキルの使用条件を定義
       return true;
     }
   },
@@ -132,8 +139,9 @@ export const skills = [
     effect: function (character) {
       // 防御力を20%増加させる
       character.defense *= 1.2;
+      console.log('鉄壁スキル発動', character.name,'の防御力が',character.defense);
     },
-    // スキル使用条件（パッシブスキルの場合は特に条件を設定する必要がないかもしれません）
+    // スキル使用条件
     condition: function (character) {
       return true;
     }

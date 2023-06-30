@@ -1,5 +1,16 @@
 [
   {
+    "name": "素手",
+    "id": "none",
+    "attribute": "",
+    "attack": 0,
+    "defense": 0,
+    "accuracy": 0,
+    "evasion": 0,
+    "speed": 0,
+    "shield": 0
+  },
+  {
     "name": "剣",
     "id": "sword",
     "attribute": "slashing",

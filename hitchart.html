@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命中率計算ヒートマップ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title text-center">命中率計算ヒートマップ</h2>
+                        <div class="d-flex justify-content-center mt-4 user-select-none" id="svg-container">
+                            <div id="hitRateHeatmap"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function calculateHitRate(hitPower, evasionPower, a, maxHitRate, minHitRate) {
+            const baseHitRate = 1 / (1 + Math.exp(-a * (hitPower - evasionPower)));
+            const adjustedHitRate = (minHitRate + baseHitRate * (maxHitRate - minHitRate)) * 100;
+            return adjustedHitRate;
+        }
+
+        const a = 0.1;
+        const maxHitRate = 0.99;
+        const minHitRate = 0.35;
+
+        const hitPowers = Array.from({length: 142}, (_, i) => i);
+        const evasionPowers = Array.from({length: 142}, (_, i) => i);
+        const hitRates = evasionPowers.map(evasionPower => hitPowers.map(hitPower => calculateHitRate(hitPower, evasionPower, a, maxHitRate, minHitRate)));
+
+        const data = [{
+            z: hitRates,
+            x: hitPowers,
+            y: evasionPowers,
+            type: 'heatmap',
+            colorscale: 'Cividis',
+        }];
+
+        const layout = {
+            xaxis: {
+                title: '命中力',
+                titlefont: {
+                    size: 16,
+                    color: '#333'
+                }
+            },
+            yaxis: {
+                title: '回避力',
+                titlefont: {
+                    size: 16,
+                    color: '#333'
+                }
+            },
+            margin: {t: 0, r: 20, b: 50, l: 60},
+            font: {
+                family: 'Raleway, sans-serif'
+            },
+            paper_bgcolor: '#fff',
+            plot_bgcolor: '#f5f5f5',
+            autosize: false,
+            width: 500,
+            height: 400,
+        };
+
+        Plotly.newPlot('hitRateHeatmap', data, layout);
+    </script>
+</body>
+</html>

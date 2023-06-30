@@ -1,0 +1,19 @@
+[
+  {
+    "side": "enemy",
+    "name": "サンドバッグくん",
+    "vitality": 1000,
+    "strength": 1,
+    "dexterity": 1,
+    "agility": 1,
+    "intelligence": 1,
+    "spirit": 1,
+    "weakness": "",
+    "experience": 0,
+    "skills": ["強攻撃"],
+    "items": [],
+    "weapon": "none",
+    "position": "frontline"
+  }
+]
+

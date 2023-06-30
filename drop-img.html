@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>背景画像のドラッグアンドドロップ</title>
+  <style>
+    .drop_zone {
+      border: 2px dashed #ccc;
+      width: 300px;
+      height: 200px;
+      text-align: center;
+      line-height: 180px;
+      background-size: cover;
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="drop_zone">ここに画像をドラッグ&ドロップ</div>
+  <div class="drop_zone">ここに画像をドラッグ&ドロップ</div>
+  <div class="drop_zone">ここに画像をドラッグ&ドロップ</div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+    var dropZones = document.getElementsByClassName("drop_zone");
+
+    // ドロップゾーンごとに処理
+    for (var i = 0; i < dropZones.length; i++) {
+      var dropZone = dropZones[i];
+
+      // ドラッグオーバーイベントのデフォルトアクションをキャンセル
+      dropZone.addEventListener("dragover", function (e) {
+        e.preventDefault();
+      });
+
+      // ドロップイベントを処理
+      dropZone.addEventListener("drop", function (e) {
+        e.preventDefault();
+
+        var files = e.dataTransfer.files;
+        var currentDropZone = e.currentTarget; // 現在のドロップゾーンを変数に格納
+
+        if (files.length > 0) {
+          var file = files[0];
+
+          // 画像ファイルであるかチェック
+          if (file.type.startsWith("image/")) {
+            var reader = new FileReader();
+
+            // 画像を読み込んだ後、background-imageプロパティにセットして表示
+            reader.onload = function (event) {
+              currentDropZone.style.backgroundImage = "url(" + event.target.result + ")";
+              currentDropZone.textContent = ''; // テキストを消去
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      });
+    }
+  });
+
+
+  </script>
+
+</body>
+
+</html>
