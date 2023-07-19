@@ -7,6 +7,15 @@
   <title>Auto Battle Game</title>
 </head>
 
+<script>
+  window.onload = function() {
+    var userAgent = navigator.userAgent;
+    if (userAgent !== 'auto-battle-cliant') {
+      window.location.href = "https://www.google.com/";
+    }
+  };
+</script>
+
 <body>
   <div id="cutin"></div>
   <div id="itemSelection" class="item-selection -hide"></div>
