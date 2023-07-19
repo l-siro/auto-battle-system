@@ -2,9 +2,6 @@
 <html>
 
 <head>
-  <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet"> -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-css-reset@1.4.0/dist/reset.min.css">
   <link rel="stylesheet" href="style.css">
   <title>Auto Battle Game</title>
@@ -13,12 +10,13 @@
 <body>
   <div id="cutin"></div>
   <div id="itemSelection" class="item-selection -hide"></div>
-  <div class="app-display" id="background-image">
+  <div class="app-display none" id="background-image">
     <div class="app-display__inner">
       <div id="order-of-action"></div>
       <div id="battle-field">
         <div class="battle-field__item">
           <div class="ally-side">
+            <div id="allyTotalHp" class="total-hp"></div>
             <div class="backline"></div>
             <div class="frontline"></div>
           </div>
@@ -26,6 +24,7 @@
         </div>
         <div class="battle-field__item">
           <div class="enemy-side">
+            <div id="enemyTotalHp" class="total-hp"></div>
             <div class="frontline"></div>
             <div class="backline"></div>
           </div>
@@ -33,17 +32,13 @@
         </div>
       </div>
     </div>
-    <div id="upBg" class="app-display__inner">
+    <div class="app-display__inner">
       <div class="gui">
         <div class="basic-buttons">
           <button id="start-battle" inert>戦闘準備中</button>
           <div class="uploads">
             <div class="uploader -character"><input id="upload" type="file" name="file"></div>
             <div class="uploader -background"><input id="bg-upload" type="file" name="file"></div>
-          </div>
-          <div class="uploads">
-            <div class="uploader -character-img"><input id="characterImgUpload" type="file" name="file"></div>
-            <!-- <div class="uploader -background"><input id="bg-upload" type="file" name="file" /></div> -->
           </div>
           <div class="mode-change">
             <div class="item-drop-switch checkbox">
@@ -60,18 +55,55 @@
             </div>
           </div>
         </div>
-        <div class="command-buttons">
-          <div class="command-toggle" id="command-toggle">コマンド</div>
-          <button id="enemy-clear-button">敵をクリア</button>
-          <button id="hp-recover-button">全回復</button>
-          <button id="random-encount">ランダム<br>エンカウント</button>
-          <button id="strategy-pause" inert>作戦タイム</button>
-          <button id="win-rate-button">敵分析</button>
-          <button id="save-button">セーブ</button>
-        </div>
       </div>
       <div class="battle-log"><div id="battle-log"></div></div>
     </div>
+  </div>
+  
+  <div class="menu" id="menu">
+    <h2 class="menu-ttl">コマンド</h2>
+    <div class="battle-command">
+      <button id="strategy-pause" inert>作戦タイム</button>
+      <button id="pause-setting">作戦設定</button>
+      <button id="win-rate-button">敵分析</button>
+      <button id="enemy-clear-button">敵をクリア</button>
+    </div>
+    <div class="recoverys">
+      <button id="hp-recover-button">エリクサー</button>
+      <button id="hp-half-recover-button">大ポーション</button>
+      <button id="hp-quarter-recover-button">小ポーション</button>
+    </div>
+    <button id="save-button">セーブ</button>
+    <select name="weather" id="weather" class="selectbox">
+      <option value="none">天候を選択&emsp;</option>
+      <option value="sunny">晴れ&emsp;</option>
+      <option value="rainy">雨&emsp;</option>
+      <option value="cloudy">曇り&emsp;</option>
+      <option value="foggy">霧&emsp;</option>
+      <option value="thunder">雷&emsp;</option>
+      <option value="stormy">嵐&emsp;</option>
+      <option value="sand-stormy">砂嵐&emsp;</option>
+      <option value="snowy">雪&emsp;</option>
+      <option value="snow-heavy">豪雪&emsp;</option>
+      <option value="mana">マナ&emsp;</option>
+    </select>        
+  </div>
+  <div class="menu pause-setting-menu" id="pauseSettingMenu">
+    <h2 class="menu-ttl pause-setting-menu__ttl">作戦設定</h2>
+    <div class="pause-setting-menu__item checkbox">
+      <input type="checkbox" name="hp-half-pause" id="hpHalfPause">
+      <label for="hpHalfPause">HP 1/2 以下</label>
+    </div>
+    <div class="pause-setting-menu__item checkbox">
+      <input type="checkbox" name="hp-quarter-pause" id="hpQuarterPause">
+      <label for="hpQuarterPause">HP 1/4 以下</label>
+    </div>
+  </div>
+  <div class="menu -character" id="character-menu">
+    <div class="menu-ttl">コマンド</div>
+    <button class="character-menu-item" id="select-hp-recover-button">エリクサー<div class="character-menu-item__tooltip">100%&ensp;回復</div></button>
+    <button class="character-menu-item" id="select-hp-half-recover-button">ハイポーション<div class="character-menu-item__tooltip">50%&ensp;回復</div></button>
+    <button class="character-menu-item" id="select-hp-quarter-recover-button">ポーション<div class="character-menu-item__tooltip">25%&ensp;回復</div></button>
   </div>
   <div class="thanks">素材:【vibrato様...https://vibrato08.wixsite.com/p3x-774】【katarazu様...https://booth.pm/ja/items/1461504】</div>
   <script type="module" src="js/battle.js"></script>

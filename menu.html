@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Right Click Menu</title>
+    <style>
+/* styles.css */
+
+.context-menu {
+    display: none;
+    position: absolute;
+    list-style: none;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+}
+
+.context-menu li {
+    padding: 5px 10px;
+}
+
+.context-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+    </style>
+</head>
+<body>
+    <div id="element" style="width: 200px; height: 200px; background-color: lightgray;">
+        右クリックしてメニューを表示
+    </div>
+
+    <ul id="context-menu" class="context-menu">
+        <li>Option 1</li>
+        <li>Option 2</li>
+        <li>Option 3</li>
+    </ul>
+
+<script>
+// script.js
+
+document.addEventListener("DOMContentLoaded", function () {
+    var element = document.getElementById("element");
+    var contextMenu = document.getElementById("context-menu");
+
+    element.addEventListener("contextmenu", function (e) {
+        e.preventDefault();
+        contextMenu.style.top = e.clientY + "px";
+        contextMenu.style.left = e.clientX + "px";
+        contextMenu.style.display = "block";
+    });
+
+    window.addEventListener("click", function (e) {
+        if (e.button !== 2) {
+            contextMenu.style.display = "none";
+        }
+    });
+});
+
+</script>
+</body>
+</html>

@@ -2,6 +2,7 @@
   {
     "side": "enemy",
     "name": "サンドバッグくん",
+    "img": "https://smashwiki.info/images/b/b8/%E5%85%AC%E5%BC%8F%E7%B5%B5_SP_%E3%82%B5%E3%83%B3%E3%83%89%E3%83%90%E3%83%83%E3%82%B0%E3%81%8F%E3%82%93.png",
     "vitality": 1000,
     "strength": 1,
     "dexterity": 1,

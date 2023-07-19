@@ -1,0 +1,43 @@
+[
+  {
+    "side": "ally",
+    "name": "クルト",
+    "img": "img/character/クルト.png",
+    "vitality": 40,
+    "strength": 60,
+    "dexterity": 65,
+    "agility": 80,
+    "intelligence": 75,
+    "spirit": 60,
+    "skills": [
+      "ヒール",
+      "火炎弾"
+    ],
+    "items": [
+      "potion",
+      "elixir"
+    ],
+    "weapon": "staff",
+    "attribute": "エルフ",
+    "position": "frontline",
+    "isCore": true
+  },
+  {
+    "side": "enemy",
+    "name": "ウッドモン",
+    "img": "img/character/ウッドモン.png",
+    "vitality": 600,
+    "strength": 0,
+    "dexterity": 10,
+    "agility": 10,
+    "intelligence": 10,
+    "spirit": 10,
+    "skills": [],
+    "items": [],
+    "weapon": "none",
+    "attribute": "木製",
+    "position": "frontline",
+    "isCore": true
+  }
+]
+

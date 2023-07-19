@@ -1,0 +1,54 @@
+[
+  {
+    "side": "enemy",
+    "name": "ゴーレム1",
+    "img": "https://3.bp.blogspot.com/-ZWsv1eBwP-8/XDXcFKGXH2I/AAAAAAABRGs/bAVhn3sVs2wkaFSaeTzvwdAD3CuS47ZUACLcBGAs/s800/fantasy_golem.png",
+    "vitality": 60,
+    "strength": 50,
+    "dexterity": 55,
+    "agility": 65,
+    "intelligence": 40,
+    "spirit": 45,
+    "skills": ["強攻撃"],
+    "items": [],
+    "weapon": "club",
+    "attribute": "石製",
+    "position": "frontline",
+    "isCore": true
+  },
+  {
+    "side": "enemy",
+    "name": "ゴーレム2",
+    "img": "https://3.bp.blogspot.com/-ZWsv1eBwP-8/XDXcFKGXH2I/AAAAAAABRGs/bAVhn3sVs2wkaFSaeTzvwdAD3CuS47ZUACLcBGAs/s800/fantasy_golem.png",
+    "vitality": 60,
+    "strength": 50,
+    "dexterity": 55,
+    "agility": 65,
+    "intelligence": 40,
+    "spirit": 45,
+    "skills": ["強攻撃"],
+    "items": [],
+    "weapon": "club",
+    "attribute": "石製",
+    "position": "frontline",
+    "isCore": true
+  },
+  {
+    "side": "enemy",
+    "name": "ゴーレム3",
+    "img": "https://3.bp.blogspot.com/-ZWsv1eBwP-8/XDXcFKGXH2I/AAAAAAABRGs/bAVhn3sVs2wkaFSaeTzvwdAD3CuS47ZUACLcBGAs/s800/fantasy_golem.png",
+    "vitality": 60,
+    "strength": 50,
+    "dexterity": 55,
+    "agility": 65,
+    "intelligence": 40,
+    "spirit": 45,
+    "skills": ["強攻撃"],
+    "items": [],
+    "weapon": "club",
+    "attribute": "石製",
+    "position": "frontline",
+    "isCore": true
+  }
+]
+

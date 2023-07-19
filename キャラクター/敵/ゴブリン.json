@@ -1,0 +1,23 @@
+[
+  {
+    "side": "enemy",
+    "name": "ゴブリン",
+    "img": "img/character/ゴブリン.png",
+    "vitality": 60,
+    "strength": 50,
+    "dexterity": 55,
+    "agility": 65,
+    "intelligence": 40,
+    "spirit": 45,
+    "weakness": "fire",
+    "skills": ["強攻撃"],
+    "items": [
+      "potion"
+    ],
+    "weapon": "club",
+    "attribute": "通常敵",
+    "position": "frontline",
+    "isCore": true
+  }
+]
+

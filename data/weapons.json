@@ -2,7 +2,7 @@
   {
     "name": "素手",
     "id": "none",
-    "attribute": "",
+    "attribute": "strike",
     "attack": 0,
     "defense": 0,
     "accuracy": 0,
@@ -13,7 +13,7 @@
   {
     "name": "剣",
     "id": "sword",
-    "attribute": "slashing",
+    "attribute": "slash",
     "attack": 150,
     "defense": 40,
     "accuracy": 0,
@@ -24,7 +24,7 @@
   {
     "name": "弓",
     "id": "bow",
-    "attribute": "snipe",
+    "attribute": "pierce",
     "attack": 100,
     "defense": 0,
     "accuracy": 10,
@@ -35,7 +35,7 @@
   {
     "name": "杖",
     "id": "staff",
-    "attribute": "striking",
+    "attribute": "strike",
     "attack": 50,
     "defense": 0,
     "accuracy": 0,
@@ -46,7 +46,7 @@
   {
     "name": "斧",
     "id": "axe",
-    "attribute": "slashing",
+    "attribute": "slash",
     "attack": 200,
     "defense": 0,
     "accuracy": -5,
@@ -57,7 +57,7 @@
   {
     "name": "大盾",
     "id": "shield",
-    "attribute": "striking",
+    "attribute": "strike",
     "attack": 20,
     "defense": 100,
     "accuracy": 0,
@@ -68,7 +68,7 @@
   {
     "name": "棍棒",
     "id": "club",
-    "attribute": "striking",
+    "attribute": "strike",
     "attack": 80,
     "defense": 0,
     "accuracy": 0,

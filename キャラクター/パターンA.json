@@ -2,120 +2,127 @@
   {
     "side": "ally",
     "name": "アーサー",
-    "vitality": 35,
+    "img": "img/character/アーサー.png",
+    "vitality": 70,
     "strength": 65,
     "dexterity": 80,
     "agility": 70,
     "intelligence": 60,
     "spirit": 50,
-    "weakness": "light",
-    "experience": 0,
-    "skills": ["鉄壁"],
+    "skills": [
+      "鉄壁"
+    ],
     "items": [
       "potion"
     ],
     "weapon": "shield",
-    "position": "frontline"
+    "attribute": "ヒューマン",
+    "position": "frontline",
+    "isCore": true
   },
   {
     "side": "ally",
     "name": "クルト",
+    "img": "img/character/クルト.png",
     "vitality": 40,
     "strength": 60,
     "dexterity": 65,
     "agility": 80,
     "intelligence": 75,
     "spirit": 60,
-    "weakness": "water",
-    "experience": 0,
     "skills": [
       "ヒール",
-      "ファイヤーボール"
+      "火炎弾"
     ],
     "items": [
       "potion",
       "elixir"
     ],
     "weapon": "staff",
-    "position": "backline"
+    "attribute": "エルフ",
+    "position": "backline",
+    "isCore": true
   },
   {
     "side": "ally",
     "name": "ヴァルター",
-    "vitality": 32,
+    "img": "img/character/ヴァルター.png",
+    "vitality": 62,
     "strength": 70,
     "dexterity": 65,
     "agility": 50,
     "intelligence": 60,
     "spirit": 75,
-    "weakness": "darkness",
-    "experience": 0,
     "skills": [
-      "強攻撃",
-      "連撃"
+      "破裂波"
     ],
     "items": [
       "potion",
       "smoke bomb"
     ],
     "weapon": "sword",
-    "position": "frontline"
+    "attribute": "ドワーフ",
+    "position": "frontline",
+    "isCore": true
   },
   {
     "side": "enemy",
     "name": "ゴブリン",
-    "vitality": 30,
+    "img": "img/character/ゴブリン.png",
+    "vitality": 60,
     "strength": 50,
     "dexterity": 55,
     "agility": 65,
     "intelligence": 40,
     "spirit": 45,
-    "weakness": "fire",
-    "experience": 0,
     "skills": ["強攻撃"],
     "items": [
       "potion"
     ],
     "weapon": "club",
-    "position": "frontline"
+    "attribute": "通常敵",
+    "position": "frontline",
+    "isCore": true
   },
   {
     "side": "enemy",
     "name": "オーク",
-    "vitality": 40,
+    "img": "img/character/オーク.png",
+    "vitality": 80,
     "strength": 70,
     "dexterity": 60,
     "agility": 65,
     "intelligence": 45,
     "spirit": 50,
-    "weakness": "slashing",
-    "experience": 0,
     "skills": ["強攻撃","鉄壁"],
     "items": [
       "potion",
       "magic stone"
     ],
     "weapon": "club",
-    "position": "frontline"
+    "attribute": "通常敵",
+    "position": "frontline",
+    "isCore": true
   },
   {
     "side": "enemy",
     "name": "ゴブリンアーチャー",
-    "vitality": 20,
+    "img": "img/character/ゴブリンアーチャー.png",
+    "vitality": 40,
     "strength": 40,
     "dexterity": 60,
     "agility": 65,
     "intelligence": 45,
     "spirit": 50,
-    "weakness": "fire",
-    "experience": 0,
     "skills": [
       "狙撃"
     ],
     "items": [
     ],
     "weapon": "bow",
-    "position": "backline"
+    "attribute": "通常敵",
+    "position": "backline",
+    "isCore": true
   }
 ]
 

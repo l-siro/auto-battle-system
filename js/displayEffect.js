@@ -24,21 +24,31 @@ export function applyMissEffect(character, turnTime) {
 }
 
 // ダメージエフェクト適用関数
-export function applyDamageEffect(character, damage, turnTime) {
-  // Display damage effect (this is just a very basic effect)
-  let characterDiv = document.querySelector(`.character[data-name="${character.name}"]`);
-  characterDiv.classList.add('damage');
-  // ダメージ数値表記を追加
-  let damageDiv = document.createElement('div');
-  damageDiv.classList.add('damage-text');
-  damageDiv.textContent = damage;
-  characterDiv.appendChild(damageDiv);
+export function applyDamageEffect(character, damage, turnTime, critical, damageType = '') {
+  const characterDiv = document.querySelector(`.character[data-name="${character.name}"]`);
+  const classes = ['damage', critical ? 'critical' : '', damageType].filter(Boolean);
 
-  setTimeout(function () {
-    characterDiv.classList.remove('damage');
+  const damageDiv = createDamageDiv(damage, characterDiv);
+  characterDiv.classList.add(...classes);
+
+  setTimeout(() => {
     characterDiv.removeChild(damageDiv);
-  }, turnTime / 2); // Remove the damage effect after turnTime / 2ms
+    characterDiv.classList.remove(...classes);
+  }, critical ? turnTime / 2 : turnTime);
 }
+
+function createDamageDiv(damage, parentDiv) {
+  const div = document.createElement('div');
+  div.classList.add('damage-text');
+  div.textContent = damage;
+  parentDiv.appendChild(div);
+  return div;
+}
+
+
+
+
+
 
 // 回復エフェクト適用関数
 export function applyRecoveryEffect(character, recoveryAmount, turnTime) {

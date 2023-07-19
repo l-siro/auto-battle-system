@@ -1,7 +1,8 @@
 [
   {
     "side": "enemy",
-    "name": "ゴブリン",
+    "name": "脚部A",
+    "img": "",
     "vitality": 30,
     "strength": 50,
     "dexterity": 55,
@@ -15,11 +16,14 @@
       "potion"
     ],
     "weapon": "club",
-    "position": "frontline"
+    "attribute": "通常敵",
+    "position": "frontline",
+    "isCore": false
   },
   {
     "side": "enemy",
-    "name": "オーク",
+    "name": "脚部B",
+    "img": "",
     "vitality": 40,
     "strength": 70,
     "dexterity": 60,
@@ -34,11 +38,14 @@
       "magic stone"
     ],
     "weapon": "club",
-    "position": "frontline"
+    "attribute": "通常敵",
+    "position": "frontline",
+    "isCore": false
   },
   {
     "side": "enemy",
-    "name": "ゴブリンアーチャー",
+    "name": "コア",
+    "img": "",
     "vitality": 20,
     "strength": 40,
     "dexterity": 60,
@@ -48,12 +55,13 @@
     "weakness": "fire",
     "experience": 0,
     "skills": [
-      "狙撃"
+      ""
     ],
     "items": [
     ],
     "weapon": "bow",
-    "position": "backline"
+    "attribute": "通常敵",
+    "position": "backline",
+    "isCore": true
   }
 ]
-
